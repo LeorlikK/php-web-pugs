@@ -15,11 +15,11 @@ class PhotosController extends Controller
 {
     private PaginateService $paginate;
 
-    const LIMIT_ITEM_PAGE = 8;
+    const LIMIT_ITEM_PAGE = 2;
 
     public function __construct()
     {
-        $this->paginate = new (PaginateService::class)((int)($_GET['page'] ?? 1));
+        $this->paginate = new (PaginateService::class)($_GET);
     }
 
     public function index():View

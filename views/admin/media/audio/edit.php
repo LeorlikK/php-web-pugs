@@ -11,7 +11,7 @@
             <?php require_once 'views/components/admin_nav.php'; ?>
         </div>
 
-        <form action="/admin/video/update?id=<?=$data['result']['id']?>" id="formAllSaveId" method="post">
+        <form action="/admin/audio/update?id=<?=$data['result']['id']?>" id="formAllSaveId" method="post">
             <table class="table admin-table">
                 <thead class="table">
                 </thead>
@@ -55,11 +55,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row">Видео</th>
+                    <th scope="row">Аудио</th>
                     <td>
-                        <video controls class="video-player img-thumbnail admin-video-edit" >
-                            <source src="/<?=$data['result']['url']?>">
-                        </video>
+                        <audio controls src="/<?= $data['result']['url'] ?>"></audio>
                     </td>
                 </tr>
 
@@ -74,7 +72,7 @@
     </div>
 </div>
 <script src="/resources/js/main.js"></script>
-<script src="/resources/js/admin_users.js"></script>
+<script src="/resources/js/admin_cancel_save.js"></script>
 </body>
 </html>
 

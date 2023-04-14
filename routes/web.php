@@ -1,5 +1,10 @@
 <?php
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\Media\AudioAdminController;
+use App\Http\Controllers\Admin\Media\PhotosAdminController;
+use App\Http\Controllers\Admin\Media\VideoAdminController;
+use App\Http\Controllers\Admin\News\NewsAdminController;
+use App\Http\Controllers\Admin\Nurseries\NurseriesAdminController;
 use App\Http\Controllers\Admin\Peculiarities\PeculiaritiesAdminController;
 use App\Http\Controllers\Admin\Users\UsersAdminController;
 use App\Http\Controllers\Auth\LoginController;
@@ -11,6 +16,7 @@ use App\Http\Controllers\Media\PhotosController;
 use App\Http\Controllers\Media\VideoController;
 use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\Nurseries\NurseriesController;
+use App\Http\Controllers\Peculiarities\PeculiaritiesController;
 use App\Http\Controllers\PersonalArea\PersonalAreaController;
 use Routes\Router;
 
@@ -70,6 +76,38 @@ Router::get('/admin/users', UsersAdminController::class, 'main');
 Router::get('/admin/users/edit', UsersAdminController::class, 'edit');
 Router::post('/admin/users/update', UsersAdminController::class, 'update');
 Router::post('/admin/users/delete', UsersAdminController::class, 'delete');
+
+Router::get('/admin/photos', PhotosAdminController::class, 'main');
+Router::post('/admin/photos/create', PhotosAdminController::class, 'create');
+Router::get('/admin/photos/edit', PhotosAdminController::class, 'edit');
+Router::post('/admin/photos/update', PhotosAdminController::class, 'update');
+Router::post('/admin/photos/delete', PhotosAdminController::class, 'delete');
+
+Router::get('/admin/video', VideoAdminController::class, 'main');
+Router::post('/admin/video/create', VideoAdminController::class, 'create');
+Router::get('/admin/video/edit', VideoAdminController::class, 'edit');
+Router::post('/admin/video/update', VideoAdminController::class, 'update');
+Router::post('/admin/video/delete', VideoAdminController::class, 'delete');
+
+Router::get('/admin/audio', AudioAdminController::class, 'main');
+Router::post('/admin/audio/create', AudioAdminController::class, 'create');
+Router::get('/admin/audio/edit', AudioAdminController::class, 'edit');
+Router::post('/admin/audio/update', AudioAdminController::class, 'update');
+Router::post('/admin/audio/delete', AudioAdminController::class, 'delete');
+
+Router::get('/admin/news', NewsAdminController::class, 'main');
+Router::get('/admin/news/create', NewsAdminController::class, 'create');
+Router::post('/admin/news/store', NewsAdminController::class, 'store');
+Router::get('/admin/news/edit', NewsAdminController::class, 'edit');
+Router::post('/admin/news/update', NewsAdminController::class, 'update');
+Router::post('/admin/news/delete', NewsAdminController::class, 'delete');
+
+Router::get('/admin/nurseries', NurseriesAdminController::class, 'main');
+Router::get('/admin/nurseries/create', NurseriesAdminController::class, 'create');
+Router::post('/admin/nurseries/store', NurseriesAdminController::class, 'store');
+Router::get('/admin/nurseries/edit', NurseriesAdminController::class, 'edit');
+Router::post('/admin/nurseries/update', NurseriesAdminController::class, 'update');
+Router::post('/admin/nurseries/delete', NurseriesAdminController::class, 'delete');
 
 Router::get('/test', \App\Http\Controllers\Test::class, 'sayTest');
 Router::exec();

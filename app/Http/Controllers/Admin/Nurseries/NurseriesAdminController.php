@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin\News;
+namespace App\Http\Controllers\Admin\Nurseries;
 
 use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Filters\Admin\AdminUsersFilter;
 use App\Http\Requests\Admin\NewsAdminRequest;
+use App\Http\Requests\Admin\NurseriesAdminRequest;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
 use App\Http\Services\PaginateService;
@@ -14,7 +15,7 @@ use Database\DB;
 use DateTime;
 use Views\View;
 
-class NewsAdminController
+class NurseriesAdminController
 {
     const LIMIT_ITEM_PAGE = 8;
 
@@ -30,14 +31,14 @@ class NewsAdminController
         if (!Authorization::authCheck()) header('Location: /');
 
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
-        $last_page = $this->paginate->lastPage('news');
+        $last_page = $this->paginate->lastPage('nurseries');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $query = "SELECT * FROM news ORDER BY created_at DESC OFFSET ? LIMIT ?";
+        $query = "SELECT * FROM nurseries ORDER BY created_at DESC OFFSET ? LIMIT ?";
         $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
 
 
-        return new View('admin.news.news', ['result' => $result, 'paginate' => $paginate]);
+        return new View('admin.nurseries.nurseries', ['result' => $result, 'paginate' => $paginate]);
     }
 
     public function create()
@@ -88,9 +89,9 @@ class NewsAdminController
     {
         if (!Authorization::authCheck()) header('Location: /');
 
-        $result = DB::select("SELECT * FROM news WHERE id = ?", [$_GET['id']])->fetch();
+        $result = DB::select("SELECT * FROM nurseries WHERE id = ?", [$_GET['id']])->fetch();
 
-        return new View('admin.news.edit', ['result' => $result]);
+        return new View('admin.nurseries.edit', ['result' => $result]);
     }
 
     public function update()
@@ -100,11 +101,14 @@ class NewsAdminController
         $request = [
             'id' => $_GET['id'],
             'title' => StrService::stringFilter($_POST['title']),
-            'short' => StrService::stringFilter($_POST['short']),
             'text' => StrService::stringFilter($_POST['text']),
+            'address' => StrService::stringFilter($_POST['address']),
+            'phone' => StrService::stringFilter($_POST['phone']),
+            'created_at' => StrService::stringFilter($_POST['created_at']),
+            'updated_at' => StrService::stringFilter($_POST['updated_at']),
         ];
 
-        $errorPost = NewsAdminRequest::validated($request);
+        $errorPost = NurseriesAdminRequest::validated($request);
 
         if (isset($_FILES['image']) && $_FILES['image']['name'] !== ''){
             $photo = $_FILES['image'];
@@ -118,15 +122,16 @@ class NewsAdminController
         if ($error || $errorPost){
             if ($photo){
                 MediaService::tmpClear();
-                $url = $photo['tmp_name'];
-                $tmpRoute = 'resources/images/tmp/' . $photo['name'];
-                if (!move_uploaded_file($url, $tmpRoute)){
-                    $tmpRoute = null;
+                $url = MediaService::generateUrl($photo, 'resources/images/tmp/', 'nurseries', 'image');
+                if (!move_uploaded_file($photo['tmp_name'], $url)){
+                    $url = null;
                 }
+                setcookie('load_image_nurseries', $url, 0, '/admin/nurseries');
 
-                return new View('admin.news.edit', ['error' => $error, 'errorPost' => $errorPost, 'result' => $request, 'tmpRoute' => $tmpRoute]);
+                return new View('admin.nurseries.edit', ['error' => $error, 'errorPost' => $errorPost, 'result' => $request, 'tmpRoute' => $url]);
             }else{
-                return new View('admin.news.edit', ['error' => $error, 'errorPost' => $errorPost, 'result' => $request]);
+                $url = $_COOKIE['load_image_nurseries'] ?? '';
+                return new View('admin.nurseries.edit', ['error' => $error, 'errorPost' => $errorPost, 'result' => $request, 'tmpRoute' => $url]);
             }
         }
 
@@ -135,18 +140,32 @@ class NewsAdminController
 
         if ($photo){
             MediaService::tmpClear();
-            $url = MediaService::generateUrl($photo, 'resources/images/news/', 'news', 'image');
-            $oldImageUrl = DB::select("SELECT image FROM news WHERE id = ?", [$request['id']])->fetch();
+            $url = MediaService::generateUrl($photo, 'resources/images/nurseries/', 'nurseries', 'image');
+            $oldImageUrl = DB::select("SELECT image FROM nurseries WHERE id = ?", [$request['id']])->fetch();
             MediaService::deletePhoto($oldImageUrl['image']);
             move_uploaded_file($photo['tmp_name'], $url);
-            DB::update("UPDATE news SET image = ?, title = ?, short = ?, text = ?, updated_at = ? WHERE id = ?",
-                [$url, $request['title'], $request['short'], $request['text'], $dateNow, $request['id']]);
+            DB::update("UPDATE nurseries SET image = ?, title = ?, text = ?, address = ?, phone = ?, updated_at = ? WHERE id = ?",
+                [$url, $request['title'], $request['text'], $request['address'], $request['phone'], $dateNow, $request['id']]);
         }else{
-            DB::update("UPDATE news SET title = ?, short = ?, text = ?, updated_at = ? WHERE id = ?",
-                [$request['title'], $request['short'], $request['text'], $dateNow, $request['id']]);
+            if (isset($_COOKIE['load_image_nurseries'])){
+                    if (file_exists($_COOKIE['load_image_nurseries'])){
+                        $url = MediaService::generateUrlFromString($_COOKIE['load_image_nurseries'], 'resources/images/nurseries/', 'nurseries', 'image');
+                        rename($_COOKIE['load_image_nurseries'], $url);
+                        setcookie('load_image_nurseries', '', -60*60*24*365, '/admin/nurseries');
+                        $oldImageUrl = DB::select("SELECT image FROM nurseries WHERE id = ?", [$request['id']])->fetch();
+                        MediaService::deletePhoto($oldImageUrl['image']);
+
+                        DB::update("UPDATE nurseries SET image = ?, title = ?, text = ?, address = ?, phone = ?, updated_at = ? WHERE id = ?",
+                            [$url, $request['title'], $request['text'], $request['address'], $request['phone'], $dateNow, $request['id']]);
+                    }
+            }else{
+                DB::update("UPDATE nurseries SET title = ?, text = ?, address = ?, phone = ?, updated_at = ? WHERE id = ?",
+                    [$request['title'], $request['text'], $request['address'], $request['phone'], $dateNow, $request['id']]);
+            }
+
         }
 
-        header("Location: /admin/news?page={$this->paginate->getPage()}");
+        header("Location: /admin/nurseries?page={$this->paginate->getPage()}");
         exit();
     }
 

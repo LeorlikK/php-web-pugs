@@ -6,5 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="shortcut icon" href="https://www.pngkit.com/png/full/44-449402_pug-logo-png-transparent-pug-js.png" />
     <link rel="stylesheet" href="/resources/css/style.css">
+    <link rel="stylesheet" href="/resources/js/select2/css/select2.min.css">
+    <link rel="stylesheet" href="/resources/js/summernote/summernote-bs4.min.css">
     <title>Pugsnotdrugs</title>
 </head>

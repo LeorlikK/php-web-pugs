@@ -10,14 +10,14 @@ class NurseriesController
 {
     private PaginateService $paginate;
 
-    const LIMIT_ITEM_PAGE = 8;
+    const LIMIT_ITEM_PAGE = 1;
 
     public function __construct()
     {
-        $this->paginate = new (PaginateService::class)((int)($_GET['page'] ?? 1));
+        $this->paginate = new (PaginateService::class)($_GET);
     }
 
-    public function index()
+    public function index():View
     {
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('nurseries');

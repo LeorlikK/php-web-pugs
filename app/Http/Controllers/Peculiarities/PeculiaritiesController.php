@@ -7,7 +7,7 @@ use Views\View;
 
 class PeculiaritiesController
 {
-    public function peculiarities()
+    public function peculiarities():View
     {
         $query = "SELECT * FROM osobennosti WHERE title = ?;";
         $result = DB::select($query, ['one'])->fetch();

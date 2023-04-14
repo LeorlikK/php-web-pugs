@@ -10,31 +10,10 @@
         <div class="admin">
             <?php require_once 'views/components/admin_nav.php'; ?>
         </div>
-        <div class="row" style="margin: 50px 50px 50px 50px">
-            <div class="col-3">
-                <label for="peculiaritiesId">peculiarities</label>
-                <select id="peculiaritiesId">
-                    <option selected disabled>1</option>
-                    <option>all</option>
-                    <option>create</option>
-                </select>
-            </div>
-            <div class="col-3">
-                <label for="peculiaritiesId">peculiarities</label>
-                <select id="peculiaritiesId">
-                    <option selected disabled>1</option>
-                    <option>all</option>
-                    <option>create</option>
-                </select>
-            </div>
 
-        </div>
-        <form action="/admin/users/update?id=<?=$data['result']['id']?>" method="post">
+        <form action="/admin/users/update?id=<?=$data['result']['id']?>" id="formAllSaveId" method="post">
             <table class="table admin-table">
                 <thead class="table">
-                <tr>
-                    <th scope="col">Field</th>
-                </tr>
                 </thead>
                 <tbody>
                 <tr>
@@ -103,7 +82,7 @@
                 </tbody>
             </table>
             <button type="button" class="btn btn-primary button-for-image" id="btnForLoginChangeId"> Изменить</button>
-            <button disabled type="submit" class="btn btn-primary button-for-image" id="btnForLoginSaveId"> Сохранить</button>
+            <button disabled type="submit" class="btn btn-primary button-for-image" id="btnForAllSaveId"> Сохранить</button>
         </form>
     </div>
     <?php require_once 'views/components/menu.php'; ?>
@@ -111,7 +90,7 @@
     </div>
 </div>
 <script src="/resources/js/main.js"></script>
-<script src="/resources/js/admin.js"></script>
+<script src="/resources/js/admin_cancel_save.js"></script>
 </body>
 </html>
 

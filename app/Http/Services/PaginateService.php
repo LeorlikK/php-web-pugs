@@ -6,15 +6,17 @@ use Database\DB;
 
 class PaginateService
 {
-    private int $page;
-    private ?int $id;
+    private ?int $page;
     private ?string $query;
 
-    public function __construct(int $page, ?int $id=null, ?string $query=null)
+
+    public function __construct($query)
     {
-        $this->page = $page;
-        $this->id = $id;
-        $this->query = $query;
+        $this->page = $query['page'] ?? 1;
+        if (isset($query['q']))unset($query['q']);
+        if (isset($query['page']))unset($query['page']);
+        $this->query = http_build_query(array_filter($query));
+
     }
 
     public function getPage():int
@@ -24,7 +26,8 @@ class PaginateService
 
     public function getId():?int
     {
-        return $this->id;
+//        return $this->id;
+        return $_GET['id'] ?? null;
     }
 
     public function offset(int $limit):int
@@ -49,18 +52,11 @@ class PaginateService
 
     public function arrayPaginate($limit, $last_page):array
     {
-        isset($this->query) ? $findQuery = '&find=' . $this->query : $findQuery = '';
-        if ($this->id !== null){
-            $idQuery = '&id=' . (string)$this->id;
-        }else{
-            $idQuery = '';
-        }
         return [
             'current_page' => $this->page,
             'last_page' => (int)ceil($last_page / $limit),
-            'id' => (int)$this->id,
-            'id_query' => $idQuery,
-            'find_query' => $findQuery
+            'page' => $this->page,
+            'query' => '&' . $this->query,
         ];
     }
 }

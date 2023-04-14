@@ -21,7 +21,7 @@
                     </div>
                     <hr class="hr">
                     <div class="news-text">
-                        <p class="news-text-text"><?=$data['files']['text']?></p>
+                        <p class="news-text-text"><?=htmlspecialchars_decode($data['files']['text'])?></p>
                     </div>
                 </div>
             </div>

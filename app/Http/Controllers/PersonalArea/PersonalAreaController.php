@@ -41,6 +41,8 @@ class PersonalAreaController
 
     public function avatarUpdate():View
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $avatar = $_FILES['avatar'];
         $errors = PhotoRequest::validated($avatar);
 
@@ -64,6 +66,8 @@ class PersonalAreaController
 
     public function emailSend()
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $to = "leorl1k93@gmail.com";
         $from = $_SESSION['authorize'];
         $message = htmlspecialchars($_POST['emailSend']);

@@ -13,10 +13,11 @@
         </div>
 
         <div class="content">
-            <form action="#" id="formSubmitId" method="post" enctype="multipart/form-data">
+            <form action="/admin/news/store" id="formSubmitId" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="exampleInputEmail1">Выберите изображение</label>
-                    <input type="file" name="photos" class="form-control" id="examplePhotos" aria-describedby="photosHelp" accept="image/*,.png,.jpg" onchange="preview()">
+                    <input type="file" name="photos" class="form-control" id="examplePhotos" aria-describedby="photosHelp"
+                           accept="image/*,.png,.jpg" value="<?=$data['tmpRoute']?? ''?>" onchange="preview()">
                     <?php if (isset($data['error']->error['size'])): ?>
                         <small id="photosHelp" class="form-text coral"><?=$data['error']->error['size'] ?></small>
                     <?php endif;?>
@@ -24,33 +25,54 @@
                         <small id="photosHelp" class="form-text coral"><?=$data['error']->error['type'] ?></small>
                     <?php endif;?>
                 </div>
-                <button type="submit" class="btn btn-primary button-for-image" id="btnFormId"> Загрузить</button>
+
+
+                <div>
+                    <div class="input-group">
+                        <textarea class="form-control" id="titleInputId" name="title" aria-label="With textarea" placeholder="Title..."><?=$data['result']['title']??''?></textarea>
+                    </div>
+                </div>
+                <div>
+                    <div class="input-group">
+                        <textarea class="form-control" id="shortInputId" name="short" aria-label="With textarea" placeholder="Short..."><?=$data['result']['short']??''?></textarea>
+                    </div>
+                </div>
 
                 <div class="news-block">
                 <div class="news">
                     <div class="news-title">
-                        <a href="#"><h1 class="news-title-text">sfhksjhfksd</h1></a>
+                        <a href="#"><h1 class="news-title-text" id="inputTitleFakeId"><?=$data['result']['title']??''?></h1></a>
                     </div>
+                    <?php if (isset($data['errorPost']->error['title'])): ?>
+                        <small id="photosHelp" class="form-text coral"><?=$data['errorPost']->error['title'] ?></small>
+                    <?php endif;?>
                     <hr class="hr">
                     <div class="news-image">
                         <img class="news-image-image" src="#" alt="none" id="imgPreviewId">
                     </div>
                     <hr class="hr">
                     <div class="news-text">
-                        <p class="news-text-text"><input></p>
+                        <p class="news-text-text" id="inputShortFakeId"><?=$data['result']['short']??''?></p>
                     </div>
+                    <?php if (isset($data['errorPost']->error['short'])): ?>
+                        <small id="photosHelp" class="form-text coral"><?=$data['errorPost']->error['short'] ?></small>
+                    <?php endif;?>
                     <hr class="hr">
                     <div class="news-text">
                         <p class="news-text-text"></p>
                     </div>
                     <!--Summer                        -->
-                    <div class="form-group">
+                    <input id="innerTextId" hidden value="<?=$data['result']['text']??''?>">
+                    <div class="form-group" id="summernoteFormId">
                         <label for="summernote">Text</label>
                         <textarea class="form-control h-200" name="text" id="summernote" placeholder="Text"></textarea>
                     </div>
+                    <?php if (isset($data['errorPost']->error['text'])): ?>
+                        <small id="photosHelp" class="form-text coral"><?=$data['errorPost']->error['text'] ?></small>
+                    <?php endif;?>
                 </div>
             </div>
-            <button disabled type="submit" class="btn btn-primary button-for-image" id="btnForLoginSaveId" style="margin-top: 0"> Сохранить</button>
+            <button type="submit" class="btn btn-primary button-for-image" id="btnForLoginSaveId" style="margin-top: 0"> Сохранить</button>
             </form>
         </div>
         <?php require_once 'views/components/menu.php'; ?>
@@ -85,6 +107,7 @@
     </script>
     <script src="/resources/js/main.js"></script>
     <script src="/resources/js/admin_news_create.js"></script>
+    <script src="/resources/js/admin_change_image.js"></script>
 </body>
 </html>
 

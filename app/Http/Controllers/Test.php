@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
@@ -88,17 +89,14 @@ class Test extends Controller
 
 
         $url = "http://php-website/admin/users?page=2&id=1&find=y";
-        $p_url = parse_url($url);
-        echo  '<pre>';
-        parse_str($p_url['query'], $p_str);
-        var_dump($p_url, $p_str);
-        echo  '</pre>';
-        $query = http_build_query($p_str);
-        var_dump($query);
-//        $query = '?';
-//        foreach ($p_str as $key => $value){
-//            $query .=
-//        }
+        $url2 = "http://php-website/admin/users?select=login&find=a";
+
+        $str = "01 - Вьетнам.mp3";
+        $name = StrService::stringFilter($str);
+        $pos = mb_strripos($name, '.');
+        $res = mb_substr($name, 0, $pos);
+        var_dump($res, $pos);
+
         die();
     }
 }

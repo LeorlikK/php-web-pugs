@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Users;
 
+use App\Http\Controllers\Auth\Authorization;
 use App\Http\Filters\Admin\AdminUsersFilter;
 use App\Http\Requests\Admin\UsersAdminRequest;
 use App\Http\Services\PaginateService;
@@ -13,19 +14,25 @@ use Views\View;
 class UsersAdminController
 {
     const LIMIT_ITEM_PAGE = 8;
-
+    const SELECT_FILED= [
+            'email',
+            'login',
+            'created_at',
+            'updated_at',
+        ];
     private PaginateService $paginate;
 
     public function __construct()
     {
-        $this->paginate = new (PaginateService::class)((int)($_GET['page'] ?? 1), (int)($_GET['id'] ?? 1), (string)($_GET['find'] ?? null));
+        $this->paginate = new (PaginateService::class)($_GET);
     }
 
     public function main():View
     {
-        $find = null;
+        if (!Authorization::authCheck()) header('Location: /');
 
-        if ((isset($_GET['find']) && $_GET['find'] !== '') || isset($_GET['select'])){
+        $find = null;
+        if ((isset($_GET['find']) && $_GET['find'] !== '') || (isset($_GET['select']) && $_GET['select'] !== '')){
             $find = $_GET['find'];
             $filter = new AdminUsersFilter();
             $query = $filter->usersEmail($_GET);
@@ -38,14 +45,16 @@ class UsersAdminController
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-
         $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
 
-        return new View('admin.users.users', ['result' => $result, 'paginate' => $paginate, 'find' => $find]);
+
+        return new View('admin.users.users', ['result' => $result, 'paginate' => $paginate, 'find' => $find, 'selectorField' => self::SELECT_FILED]);
     }
 
     public function edit()
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $result = DB::select("SELECT * FROM users WHERE id = ?", [$_GET['id']])->fetch();
 
         return new View('admin.users.edit', ['result' => $result]);
@@ -53,6 +62,8 @@ class UsersAdminController
 
     public function update()
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $result = [
             'email' => StrService::stringFilter($_POST['email']),
             'login' => StrService::stringFilter($_POST['login']),
@@ -78,11 +89,19 @@ class UsersAdminController
         return new View('admin.users.edit', ['result' => $result, 'errors' => $errors]);
     }
 
-    public function delete():void
+    public function delete()
     {
-        $id = StrService::stringFilter($_POST['id']);
-        DB::delete("DELETE FROM users WHERE id = ?", [$id]);
+        if (!Authorization::authCheck()) header('Location: /');
 
-        header('Location: /admin/users');
+        $id = StrService::stringFilter($_POST['id']);
+
+        $news = DB::select("SELECT id FROM news WHERE user_id = ?", [$id])->fetchAll();
+        $news_comments = DB::select("SELECT id FROM news_comments WHERE user_id = ?", [$id])->fetchAll();
+        $comments_relations =DB::select("SELECT id FROM comment_relations WHERE comment_id IN(SELECT id FROM news_comments WHERE user_id = ?)", [$id])->fetchAll();
+//        DB::delete("DELETE FROM users WHERE id = ?", [$id]);
+
+        return json_encode([$comments_relations]);
+//        header('Location: /admin/users');
+        // resources/images/photos/3fbeb5ea0f0d2d31973340bedf9134c3.jpeg
     }
 }

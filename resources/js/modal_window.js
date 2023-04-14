@@ -1,32 +1,47 @@
+let deleteId = null
 const myModal = document.getElementById('exampleModal')
-const myInput = document.getElementById('btn-delete')
+const myInput = document.querySelector('.table.admin-table')
 
-console.log(myModal)
-console.log(myInput)
-myInput.addEventListener('click', function () {
-    console.log('click')
-    myModal.style.display = "block"
-    const closeBtn = document.getElementById('closeId')
-    const NoBtn = document.getElementById('btn-no')
-    const YesBtn = document.getElementById('btn-yes')
-    closeBtn.addEventListener('click', () => {
-        myModal.style.display = "none"
-    })
-    NoBtn.addEventListener('click', () => {
-        myModal.style.display = "none"
-    })
-    YesBtn.addEventListener('click', () => {
-        myModal.style.display = "none"
-        const id = myInput.closest('tr').id
-        const router = new XMLHttpRequest()
-        const body = `id=${id}`
-        router.open('post', `/admin/users/delete`)
-        router.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        router.onload = () => {
-            if (router.response) {
-                location.reload()
-            }
+const closeBtn = document.getElementById('closeId')
+const NoBtn = document.getElementById('btn-no')
+const YesBtn = document.getElementById('btn-yes')
+console.log(closeBtn)
+console.log(NoBtn)
+console.log(YesBtn)
+
+closeBtn.addEventListener('click', () => close())
+
+NoBtn.addEventListener('click', () => close())
+
+YesBtn.addEventListener('click', (event) => yes(event))
+
+function yes(event){
+    myModal.style.display = "none"
+    const match = deleteId.match(/\d+$/);
+    const id = match ? parseInt(match[0]) : null;
+    const router = new XMLHttpRequest()
+    const body = `id=${id}`
+    const route = window.location.pathname + '/delete'
+    console.log(body, route)
+    router.open('post', route)
+    router.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    router.onload = () => {
+        if (router.response) {
+            location.reload()
         }
-        router.send(body)
-    })
+    }
+    router.send(body)
+}
+
+function close(){
+    myModal.style.display = "none"
+}
+myInput.addEventListener('click', function (event) {
+    if (event.target.className === 'admin-btn-delete'){
+        myModal.style.display = "block"
+        deleteId = event.target.id
+        console.log('Yes')
+        console.log(deleteId)
+    }
+    console.log('No')
 })

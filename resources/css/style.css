@@ -846,3 +846,84 @@ h1 {
   /*border: 2px lightcoral solid;*/
   background-color: lightcoral;
 }
+
+/* Стили для кнопок */
+.arrow-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+}
+
+/* Стили для стрелки вверх */
+.up:before {
+  content: "";
+  display: block;
+  border-style: solid;
+  border-width: 0 6px 10px 6px;
+  border-color: transparent transparent #333 transparent;
+  height: 0;
+  width: 0;
+}
+.up-active:before {
+  content: "";
+  display: block;
+  border-style: solid;
+  border-width: 0 6px 10px 6px;
+  border-color: transparent transparent lightcoral transparent;
+  height: 0;
+  width: 0;
+}
+
+/* Стили для стрелки вниз */
+.down:before {
+  content: "";
+  display: block;
+  border-style: solid;
+  border-width: 10px 6px 0 6px;
+  border-color: #333 transparent transparent transparent;
+  height: 0;
+  width: 0;
+}
+.down-active:before {
+  content: "";
+  display: block;
+  border-style: solid;
+  border-width: 10px 6px 0 6px;
+  border-color: lightcoral transparent transparent transparent;
+  height: 0;
+  width: 0;
+}
+
+.selector-users{
+  width: 200px;
+  background-color: rgba(252, 252, 252, 0.7);
+  border: 1px solid lightcoral!important;
+}
+.selector-users:active{
+  border: 1px solid lightcoral;
+}
+.selector-users:focus{
+  border: 1px solid lightcoral;
+  outline: 1px solid lightcoral;
+}
+.admin-photos{
+  max-width: 60px;
+  max-height: 60px;
+}
+
+.admin-photos-edit{
+  margin: auto auto;
+  max-width: 600px;
+  max-height: 600px;
+}
+
+.admin-video{
+  max-width: 60px;
+  max-height: 60px;
+}
+.admin-video-edit{
+  max-width: 800px;
+  max-height: 800px;
+}
