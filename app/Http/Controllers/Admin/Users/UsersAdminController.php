@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Users;
 
+use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Filters\Admin\AdminUsersFilter;
 use App\Http\Requests\Admin\UsersAdminRequest;
@@ -24,22 +25,24 @@ class UsersAdminController
 
     public function __construct()
     {
+        if (!Authorization::authCheck()) header('Location: /');
         $this->paginate = new (PaginateService::class)($_GET);
     }
 
     public function main():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
-        $find = null;
-        if ((isset($_GET['find']) && $_GET['find'] !== '') || (isset($_GET['select']) && $_GET['select'] !== '')){
-            $find = $_GET['find'];
-            $filter = new AdminUsersFilter();
-            $query = $filter->usersEmail($_GET);
-            $last_page = $this->paginate->lastPageForFindUsers('users', $_GET['find']);
+        $get = StrService::stringFilter($_GET ?? null);
+        if ((isset($get['find']) && $get['find'] !== '') || (isset($get['select']) && $get['select'] !== '')){
+            $AdminUsersFilter = new AdminUsersFilter();
+            if (isset($get['find'])){
+                $last_page = $this->paginate->lastPageForFindUsers('users', $get['find']);
+            }else{
+                $last_page = $this->paginate->lastPage('users');
+            }
+            $query = $AdminUsersFilter->filter($get);
         }else{
-            $query = "SELECT * FROM users ORDER BY created_at DESC OFFSET ? LIMIT ?";
             $last_page = $this->paginate->lastPage('users');
+            $query = "SELECT * FROM users ORDER BY created_at DESC OFFSET ? LIMIT ?";
         }
 
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
@@ -47,61 +50,58 @@ class UsersAdminController
 
         $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
 
-
-        return new View('admin.users.users', ['result' => $result, 'paginate' => $paginate, 'find' => $find, 'selectorField' => self::SELECT_FILED]);
+        return new View('admin.users.users', ['result' => $result, 'paginate' => $paginate,
+            'find' => $get['find'] ?? null, 'selector' => self::SELECT_FILED, 'sorted' => $get['sorted']??null]);
     }
 
-    public function edit()
+    public function edit():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
-        $result = DB::select("SELECT * FROM users WHERE id = ?", [$_GET['id']])->fetch();
+        setcookie('old_value', '', -60*60*24);
+        $result = DB::select("SELECT * FROM users WHERE id = ?", [StrService::stringFilter($_GET['id'] ?? null)])->fetch();
 
         return new View('admin.users.edit', ['result' => $result]);
     }
 
-    public function update()
+    public function update():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
-        $result = [
+        $request = [
             'email' => StrService::stringFilter($_POST['email']),
             'login' => StrService::stringFilter($_POST['login']),
             'role' => StrService::stringFilter($_POST['role']),
             'avatar' => StrService::stringFilter($_POST['avatar']),
-            'id' => $_GET['id']
+            'id' => StrService::stringFilter($_GET['id']??null)
         ];
+        $errors = UsersAdminRequest::validated($request);
 
-        $errors = UsersAdminRequest::validated($result);
         if (!$errors){
-
             $dateTime = new DateTime();
             $dateNow = $dateTime->format('Y-m-d H:i:s');
-            DB::update("UPDATE users SET email = ?, login = ?, role = ?, avatar = ?, updated_at = ?
-                WHERE id = ?", [$result['email'], $result['login'], $result['role'], $result['avatar'], $dateNow, $result['id']]);
+            setcookie('old_value', '', -60*60*24);
+            DB::update("UPDATE users SET email = ?, login = ?, role = ?, avatar = ?, updated_at = ? WHERE id = ?",
+                [$request['email'], $request['login'], $request['role'], $request['avatar'], $dateNow, $request['id']]);
 
-            header('Location: /admin/users/edit?id=' . $_GET['id']);
+            header('Location: /admin/users/edit?id=' . $request['id']);
             exit();
         }
 
-        $result = DB::select("SELECT * FROM users WHERE id = ?", [$_GET['id']])->fetch();
+        $result = DB::select("SELECT * FROM users WHERE id = ?", [$request['id']])->fetch();
+        foreach ($request as $key => $value){
+            $result[$key] = $value;
+        }
 
         return new View('admin.users.edit', ['result' => $result, 'errors' => $errors]);
     }
 
-    public function delete()
+    public function delete():bool
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $id = StrService::stringFilter($_POST['id']);
 
-        $news = DB::select("SELECT id FROM news WHERE user_id = ?", [$id])->fetchAll();
-        $news_comments = DB::select("SELECT id FROM news_comments WHERE user_id = ?", [$id])->fetchAll();
-        $comments_relations =DB::select("SELECT id FROM comment_relations WHERE comment_id IN(SELECT id FROM news_comments WHERE user_id = ?)", [$id])->fetchAll();
-//        DB::delete("DELETE FROM users WHERE id = ?", [$id]);
-
-        return json_encode([$comments_relations]);
-//        header('Location: /admin/users');
-        // resources/images/photos/3fbeb5ea0f0d2d31973340bedf9134c3.jpeg
+        $user = DB::select("SELECT * FROM users WHERE id = ?", [$id])->fetch();
+        if ($user['banned'] === true){
+            DB::update("UPDATE users SET banned = ? WHERE id = ?", [0, $id]);
+        }else{
+            DB::update("UPDATE users SET banned = ? WHERE id = ?", [true, $id]);
+        }
+        return true;
     }
 }

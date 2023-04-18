@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
 use App\Http\Services\PaginateService;
+use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
@@ -24,8 +25,6 @@ class PhotosController extends Controller
 
     public function index():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('photos');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
@@ -35,8 +34,10 @@ class PhotosController extends Controller
         return new View('media.photos', ['files' => $photos, 'paginate' => $paginate]);
     }
 
-    public function create():?View
+    public function store():?View
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $photo = $_FILES['photos'];
         $error = PhotoRequest::validated($photo);
 
@@ -50,8 +51,8 @@ class PhotosController extends Controller
             return new View('media.photos', ['error' => $error, 'files' => $photos, 'paginate' => $paginate]);
         }
 
-        $url = MediaService::generateUrl($photo, 'resources/images/photos/', 'photos', 'url');
-        $name = MediaService::createName($photo);
+        $url = MediaService::generateUniqueUrl($photo, 'resources/images/photos/', 'photos', 'url');
+        $name = MediaService::createName($photo['name']);
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
@@ -65,7 +66,9 @@ class PhotosController extends Controller
 
     public function delete()
     {
-        $url = $_POST['delete'];
+        if (!Authorization::authCheck()) header('Location: /');
+
+        $url = StrService::stringFilter($_POST['delete']);
 
         if (file_exists($url)){
             $res = unlink($url);

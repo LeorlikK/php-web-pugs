@@ -13,7 +13,7 @@ require_once 'views/components/head.php'; ?>
 <div class="wrapper">
     <h1>Photo</h1>
     <?php if (Authorization::checkAdmin()): ?>
-        <form action="/media/photos/save?page=<?=($data['paginate']['current_page']) ?>" id="formSubmitId" method="post" enctype="multipart/form-data">
+        <form action="/media/photos/store?page=<?=($data['paginate']['current_page']) ?>" id="formSubmitId" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="exampleInputEmail1">Выберите изображение</label>
                 <input type="file" name="photos" class="form-control" id="examplePhotos" aria-describedby="photosHelp" accept="image/*,.png,.jpg">

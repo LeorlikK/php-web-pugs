@@ -13,7 +13,7 @@
         <h3>Message:</h3>
         <p><?=$message?></p>
         <h3>Cod:</h3>
-        <p><?=$message?></p>
+        <p><?=$cod?></p>
     </div>
 </body>
 </html>

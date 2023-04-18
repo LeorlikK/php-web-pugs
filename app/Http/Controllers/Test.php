@@ -87,15 +87,12 @@ class Test extends Controller
 ////        $query = "CREATE UNIQUE INDEX photo_url_unique ON photos (url)";
 //        DB::connect()->query($query);
 
+        $query = "ALTER TABLE users ADD COLUMN verify varchar(255) DEFAULT false;";
+//
+        DB::connect()->query($query);
 
-        $url = "http://php-website/admin/users?page=2&id=1&find=y";
-        $url2 = "http://php-website/admin/users?select=login&find=a";
-
-        $str = "01 - Вьетнам.mp3";
-        $name = StrService::stringFilter($str);
-        $pos = mb_strripos($name, '.');
-        $res = mb_substr($name, 0, $pos);
-        var_dump($res, $pos);
+//        $getFile = file_get_contents('views/components/mail.html');
+//        print $getFile;
 
         die();
     }

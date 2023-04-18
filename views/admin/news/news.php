@@ -2,7 +2,7 @@
 <html lang="en">
 <?php require_once 'views/components/head.php'; ?>
 <body>
-<?php require_once 'views/components/modal_window.php'; ?>
+<?php require_once 'views/components/modal_windows/modal_window_news.php'; ?>
 <header>
     <?php require_once 'views/components/header.php'; ?>
 </header>
@@ -24,6 +24,7 @@
                 <th scope="col">Title</th>
                 <th scope="col">Short</th>
                 <th scope="col">Text</th>
+                <th scope="col">Publisher</th>
                 <th scope="col">Created_at</th>
                 <th scope="col">Updated_at</th>
                 <th scope="col"></th>
@@ -39,10 +40,11 @@
                     <td><?=\App\Http\Services\StrService::stringCut($result['title'], 15)?></td>
                     <td><?=\App\Http\Services\StrService::stringCut($result['short'], 15)?></td>
                     <td><?=\App\Http\Services\StrService::stringCut($result['text'], 15)?></td>
+                    <td><?=$result['publish'] ? 'Опубликовано':'Скрыто'?></td>
                     <td><?=$result['created_at']?></td>
                     <td><?=$result['updated_at']?></td>
                     <td><a class="admin-btn-update" href="/admin/news/edit?id=<?=$result['id']?>">Update</a></td>
-                    <td><a class="admin-btn-delete" href="#" id="btn-delete_<?=$result['id']?>">Delete</a></td>
+                    <td><a class="admin-btn-delete" id="btn-delete_<?=$result['id']?>">Delete</a></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

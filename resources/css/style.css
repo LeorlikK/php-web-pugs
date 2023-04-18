@@ -811,6 +811,9 @@ h1 {
   text-decoration: none;
   color: #940922;
 }
+.admin-btn-delete:hover{
+  cursor: pointer;
+}
 .modal {
   display: none;
   position: fixed;

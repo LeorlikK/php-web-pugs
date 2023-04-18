@@ -7,6 +7,7 @@ use App\Http\Requests\Media\AudioRequest;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
 use App\Http\Services\PaginateService;
+use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
@@ -24,8 +25,6 @@ class AudioController
 
     public function index():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('audio');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
@@ -35,8 +34,10 @@ class AudioController
         return new View('media.audio', ['files' => $audio, 'paginate' => $paginate]);
     }
 
-    public function create():?View
+    public function store():?View
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $audio = $_FILES['audio'];
         $error = AudioRequest::validated($audio);
 
@@ -50,8 +51,8 @@ class AudioController
             return new View('media.photos', ['error' => $error, 'files' => $audio, 'paginate' => $paginate]);
         }
 
-        $url = MediaService::generateUrl($audio, 'resources/audio/', 'audio', 'url');
-        $name = MediaService::createName($audio);
+        $url = MediaService::generateUniqueUrl($audio, 'resources/audio/', 'audio', 'url');
+        $name = MediaService::createName($audio['name']);
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
@@ -65,7 +66,9 @@ class AudioController
 
     public function delete()
     {
-        $url = $_POST['delete'];
+        if (!Authorization::authCheck()) header('Location: /');
+
+        $url = StrService::stringFilter($_POST['delete']);
 
         if (file_exists($url)){
             $res = unlink($url);

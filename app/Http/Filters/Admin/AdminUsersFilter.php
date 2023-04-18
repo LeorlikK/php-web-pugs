@@ -7,10 +7,10 @@ use App\Http\Services\StrService;
 
 class AdminUsersFilter
 {
-    public function usersEmail($query)
+    public function filter($query):string
     {
         $sql = "SELECT * FROM users";
-        if ($query['find']){
+        if (isset($query['find'])){
             $find = StrService::stringFilter($query['find']);
             $sql .= " WHERE email LIKE '%{$find}%'";
         }

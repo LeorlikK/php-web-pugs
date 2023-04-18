@@ -6,31 +6,49 @@ use Database\DB;
 
 class MediaService
 {
-    public static function generateUrl(array $file, $way, $table, $field):string
+    public static function generateUniqueUrl(array $file, string $way, string $table, string $field):string
     {
-        $type = StrService::stringFilter($file['type']);
-        $extension = explode('/', $type)[1];
         $name = '';
         $uniqueName = false;
         while ($uniqueName !== true){
-            $dateName = md5(time());
-            $name = $way . $dateName . ".$extension";
-            if (!count(DB::select("SELECT * FROM $table WHERE $field = ?", [$name])->fetchAll()) > 0 ) {
-                $uniqueName = true;
-            }
+            $name = self::generateUrl($file, $way);
+            $uniqueName = self::forTable($name, $table, $field);
         }
         return $name;
+    }
+
+    public static function generateFolderUniqueUrl(array $file, string $way):string
+    {
+        $name = '';
+        $uniqueName = false;
+        while ($uniqueName !== true){
+            $name = self::generateUrl($file, $way);
+            $uniqueName = self::forFolder($name);
+        }
+        return $name;
+    }
+
+    public static function generateUrl(array $file, string $way):string
+    {
+        $extension = self::extension($file);
+        $dateName = md5(time());
+        return $way . $dateName . ".$extension";
+    }
+
+    public static function extension(array $file):string
+    {
+        $type = StrService::stringFilter($file['type']);
+        return explode('/', $type)[1];
     }
 
     public static function generateUrlFromString(string $string, $way, $table, $field):string
     {
-        $type = StrService::stringFilter($string);
-//        $extension = explode('/', $type)[1];
+        $extension = '.png';
         $name = '';
         $uniqueName = false;
         while ($uniqueName !== true){
             $dateName = md5(time());
-            $name = $way . $dateName . ".png";
+            $name = $way . $dateName . $extension;
             if (!count(DB::select("SELECT * FROM $table WHERE $field = ?", [$name])->fetchAll()) > 0 ) {
                 $uniqueName = true;
             }
@@ -38,11 +56,31 @@ class MediaService
         return $name;
     }
 
-    public static function createName(array $file):string
+    private static function forTable($name, $table, $field):bool
     {
-        $name = StrService::stringFilter($file['name']);
-        $pos = mb_strripos($name, '.');
-        return mb_substr($name, 0, $pos);
+        if (!count(DB::select("SELECT * FROM $table WHERE $field = ?", [$name])->fetchAll()) > 0 ) {
+            return true;
+        }
+        return false;
+    }
+
+    private static function forFolder($name):bool
+    {
+        if (!file_exists($name)){
+            return true;
+        }
+        return false;
+    }
+
+    public static function createName(string $string):string
+    {
+        $name = StrService::stringFilter($string);
+        $position = mb_strripos($name, '.');
+        if ($position){
+            return mb_substr($name, 0, $position);
+        }else{
+            return $name;
+        }
     }
 
     public static function tmpClear():void

@@ -2,7 +2,7 @@
 <html lang="en">
 <?php require_once 'views/components/head.php'; ?>
 <body>
-<?php require_once 'views/components/modal_window.php'; ?>
+<?php require_once 'views/components/modal_windows/modal_window_audio.php'; ?>
 <header>
     <?php require_once 'views/components/header.php'; ?>
 </header>
@@ -11,15 +11,15 @@
         <div class="admin">
             <?php require_once 'views/components/admin_nav.php'; ?>
         </div>
-        <form action="/admin/audio/create?page=<?=($data['paginate']['current_page']) ?>" id="formSubmitId" method="post" enctype="multipart/form-data">
+        <form action="/admin/audio/store?page=<?=($data['paginate']['current_page']) ?>" id="formSubmitId" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="exampleInputEmail1">Выберите аудио файл</label>
                 <input type="file" name="audio" class="form-control" id="examplePhotos" aria-describedby="photosHelp" accept="audio/*,.mp3">
-                <?php if (isset($data['error']->error['size'])): ?>
-                    <small id="photosHelp" class="form-text coral"><?=$data['error']->error['size'] ?></small>
+                <?php if (isset($data['errors']->error['size'])): ?>
+                    <small id="photosHelp" class="form-text coral"><?=$data['errors']->error['size'] ?></small>
                 <?php endif;?>
-                <?php if (isset($data['error']->error['type'])): ?>
-                    <small id="photosHelp" class="form-text coral"><?=$data['error']->error['type'] ?></small>
+                <?php if (isset($data['errors']->error['type'])): ?>
+                    <small id="photosHelp" class="form-text coral"><?=$data['errors']->error['type'] ?></small>
                 <?php endif;?>
             </div>
             <button type="submit" class="btn btn-primary button-for-image" id="btnFormId"> Загрузить</button>
@@ -45,7 +45,7 @@
                     <td><?=$result['created_at']?></td>
                     <td><?=$result['updated_at']?></td>
                     <td><a class="admin-btn-update" href="/admin/audio/edit?id=<?=$result['id']?>">Update</a></td>
-                    <td><a class="admin-btn-delete" href="#" id="btn-delete_<?=$result['id']?>">Delete</a></td>
+                    <td><a class="admin-btn-delete" id="btn-delete_<?=$result['id']?>">Delete</a></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

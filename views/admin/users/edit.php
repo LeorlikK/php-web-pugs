@@ -10,7 +10,6 @@
         <div class="admin">
             <?php require_once 'views/components/admin_nav.php'; ?>
         </div>
-
         <form action="/admin/users/update?id=<?=$data['result']['id']?>" id="formAllSaveId" method="post">
             <table class="table admin-table">
                 <thead class="table">
@@ -20,7 +19,6 @@
                     <th scope="row">ID</th>
                     <td><?=\App\Http\Services\StrService::stringCut($data['result']['id'], 15)?></td>
                 </tr>
-
                 <tr>
                     <th scope="row">Email</th>
                     <td>
@@ -30,8 +28,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
-
                 <tr>
                     <th scope="row">Login</th>
                     <td>
@@ -41,7 +37,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Role</th>
                     <td>
@@ -55,7 +50,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Avatar</th>
                     <td>
@@ -65,14 +59,12 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Created_at</th>
                     <td>
                         <input disabled class="login-area" style="width: 100%" autocomplete="off" name="created_at" type="text" value="<?=$data['result']['created_at']?>">
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Updated_at</th>
                     <td>

@@ -15,7 +15,7 @@ class PeculiaritiesController
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function care()
+    public function care():?View
     {
         $query = "SELECT * FROM osobennosti WHERE title = ?;";
         $result = DB::select($query, ['Уход и содержание'])->fetch();
@@ -23,7 +23,7 @@ class PeculiaritiesController
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function nutrition()
+    public function nutrition():?View
     {
         $query = "SELECT * FROM osobennosti WHERE title = ?;";
         $result = DB::select($query, ['Питание'])->fetch();
@@ -31,7 +31,7 @@ class PeculiaritiesController
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function health()
+    public function health():?View
     {
         $query = "SELECT * FROM osobennosti WHERE title = ?;";
         $result = DB::select($query, ['Здоровье'])->fetch();
@@ -39,7 +39,7 @@ class PeculiaritiesController
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function paddock()
+    public function paddock():?View
     {
         $query = "SELECT * FROM osobennosti WHERE title = ?;";
         $result = DB::select($query, ['Выгул'])->fetch();

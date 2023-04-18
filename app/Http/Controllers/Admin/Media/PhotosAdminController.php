@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Media;
 
-use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
-use App\Http\Filters\Admin\AdminUsersFilter;
+use App\Http\Requests\Admin\PhotosAdminUpdateRequest;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
 use App\Http\Services\PaginateService;
@@ -21,42 +20,40 @@ class PhotosAdminController
 
     public function __construct()
     {
+        if (!Authorization::authCheck()) header('Location: /');
         $this->paginate = new (PaginateService::class)($_GET);
     }
 
     public function main():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('photos');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $query = "SELECT * FROM photos ORDER BY created_at DESC OFFSET ? LIMIT ?";
-        $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
-
+        $result = DB::select("SELECT * FROM photos ORDER BY created_at DESC OFFSET ? LIMIT ?",
+            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
 
         return new View('admin.media.photos.photos', ['result' => $result, 'paginate' => $paginate]);
     }
 
-    public function create():?View
+    public function store():?View
     {
         $photo = $_FILES['photos'];
-        $error = PhotoRequest::validated($photo);
+        $errors = PhotoRequest::validated($photo);
 
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('photos');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
 
-        if ($error){
-            $result = DB::select("SELECT * FROM photos OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
-            return new View('admin.media.photos.photos', ['error' => $error, 'result' => $result, 'paginate' => $paginate]);
+        if ($errors){
+            $result = DB::select("SELECT * FROM photos OFFSET ? LIMIT ?",
+                [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            return new View('admin.media.photos.photos', ['errors' => $errors, 'result' => $result, 'paginate' => $paginate]);
         }
 
-        $url = MediaService::generateUrl($photo, 'resources/images/photos/', 'photos', 'url');
-        $name = MediaService::createName($photo);
-
+        $url = MediaService::generateUniqueUrl($photo, 'resources/images/photos/', 'photos', 'url');
+        $name = MediaService::createName($photo['name']);
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
         DB::insert("INSERT INTO photos (url, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
@@ -69,57 +66,50 @@ class PhotosAdminController
 
     public function edit():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
-        $result = DB::select("SELECT * FROM photos WHERE id = ?", [$_GET['id']])->fetch();
+        setcookie('old_value', '', -60*60*24);
+        $result = DB::select("SELECT * FROM photos WHERE id = ?", [StrService::stringFilter($_GET['id']?? null)])->fetch();
 
         return new View('admin.media.photos.edit', ['result' => $result]);
     }
 
-    public function update()
+    public function update():?View
     {
-        if (!Authorization::authCheck()) header('Location: /');
+        $request = [
+            'name' => StrService::stringFilter($_POST['name']),
+            'id' => StrService::stringFilter($_GET['id'])
+        ];
+        $errors = PhotosAdminUpdateRequest::validated($request);
 
-        try {
-            $request = [
-                'name' => StrService::stringFilter($_POST['name']),
-                'id' => $_GET['id']
-            ];
-
-            $pos = strripos($request['name'], '.');
-            if ($pos){
-                $name = mb_substr($request['name'], 0, $pos);
-            }else{
-                $name = $request['name'];
-            }
-
+        if (!$errors){
+            setcookie('old_value', '', -60*60*24);
+            $name = MediaService::createName($request['name']);
             $dateTime = new DateTime();
             $dateNow = $dateTime->format('Y-m-d H:i:s');
-            DB::update("UPDATE photos SET name = ?, updated_at = ?
-                WHERE id = ?", [$name, $dateNow, $request['id']]);
+            setcookie('old_value', '', -60*60*24);
+            DB::update("UPDATE photos SET name = ?, updated_at = ? WHERE id = ?",
+                [$name, $dateNow, $request['id']]);
 
-            header('Location: /admin/photos/edit?id=' . $_GET['id']);
+            header('Location: /admin/photos/edit?id=' . $request['id']);
             exit();
-        }catch (\Exception $exception){
-            return new ErrorView('Не удалось обновить изображение');
         }
+
+        $result = DB::select("SELECT * FROM photos WHERE id = ?", [$request['id']])->fetch();
+        foreach ($request as $key => $value){
+            $result[$key] = $value;
+        }
+
+        return new View('admin.media.photos.edit', ['result' => $result, 'errors' => $errors]);
     }
 
-    public function delete()
+    public function delete():bool
     {
-        if (!Authorization::authCheck()) header('Location: /');
+        $id = StrService::stringFilter($_POST['id']);
 
-        try {
-            $id = StrService::stringFilter($_POST['id']);
-
-            $photos = DB::select("SELECT * FROM photos WHERE id = ?", [$id])->fetch();
-            DB::delete("DELETE FROM photos WHERE id = ?", [$id]);
-            if (file_exists($photos['url'])){
-                unlink($photos['url']);
-            }
-            return true;
-        }catch (\Exception $exception){
-            return new ErrorView('Не удалось удалить изображение');
+        $photos = DB::select("SELECT * FROM photos WHERE id = ?", [$id])->fetch();
+        DB::delete("DELETE FROM photos WHERE id = ?", [$id]);
+        if (file_exists($photos['url'])){
+            unlink($photos['url']);
         }
+        return true;
     }
 }

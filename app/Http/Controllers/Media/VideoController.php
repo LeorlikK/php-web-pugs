@@ -8,6 +8,7 @@ use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Requests\Media\VideoRequest;
 use App\Http\Services\MediaService;
 use App\Http\Services\PaginateService;
+use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
@@ -25,8 +26,6 @@ class VideoController
 
     public function index():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('video');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
@@ -36,8 +35,10 @@ class VideoController
         return new View('media.video', ['files' => $video, 'paginate' => $paginate]);
     }
 
-    public function create():?View
+    public function store():?View
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $video = $_FILES['video'];
         $error = VideoRequest::validated($video);
 
@@ -51,8 +52,8 @@ class VideoController
             return new View('media.video', ['error' => $error, 'files' => $video, 'paginate' => $paginate]);
         }
 
-        $url = MediaService::generateUrl($video, 'resources/video/', 'video', 'url');
-        $name = MediaService::createName($video);
+        $url = MediaService::generateUniqueUrl($video, 'resources/video/', 'video', 'url');
+        $name = MediaService::createName($video['name']);
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
@@ -64,9 +65,11 @@ class VideoController
         exit();
     }
 
-    public function delete()
+    public function delete():void
     {
-        $url = $_POST['delete'];
+        if (!Authorization::authCheck()) header('Location: /');
+
+        $url = StrService::stringFilter($_POST['delete']);
 
         if (file_exists($url)){
             $res = unlink($url);

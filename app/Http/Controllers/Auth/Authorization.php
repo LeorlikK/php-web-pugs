@@ -43,8 +43,10 @@ class Authorization
 
     public static function authDelete():bool
     {
-        if (isset($_SESSION['authorize'])){
-            unset($_SESSION['authorize']);
+        if (isset($_SESSION)){
+            foreach ($_SESSION as $key => $value){
+                unset($_SESSION[$key]);
+            }
             return true;
         }else{
             return false;

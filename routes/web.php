@@ -29,6 +29,7 @@ Router::post('/login', LoginController::class, 'loginCreate');
 Router::post('/logout', LoginController::class, 'logout');
 Router::get('/registration', RegistrationController::class, 'registrationShow');
 Router::post('/registration', RegistrationController::class, 'registrationCreate');
+Router::get('/registration/verify', RegistrationController::class, 'verify');
 
 // Peculiarities
 Router::get('/peculiarities', PeculiaritiesController::class, 'peculiarities');
@@ -51,15 +52,15 @@ Router::post('/news/comments/create-dop', CommentsController::class, 'createDop'
 
 // Media
 Router::get('/media/photos', PhotosController::class, 'index');
-Router::post('/media/photos/save', PhotosController::class, 'create');
+Router::post('/media/photos/store', PhotosController::class, 'store');
 Router::post('/media/photos/delete', PhotosController::class, 'delete');
 
 Router::get('/media/video', VideoController::class, 'index');
-Router::post('/media/video/save', VideoController::class, 'create');
+Router::post('/media/video/store', VideoController::class, 'store');
 Router::post('/media/video/delete', VideoController::class, 'delete');
 
 Router::get('/media/audio', AudioController::class, 'index');
-Router::post('/media/audio/save', AudioController::class, 'create');
+Router::post('/media/audio/store', AudioController::class, 'store');
 Router::post('/media/audio/delete', AudioController::class, 'delete');
 
 // Personal Area
@@ -70,7 +71,10 @@ Router::post('/office/email/send', PersonalAreaController::class, 'emailSend');
 
 // Admin
 Router::get('/admin', AdminController::class, 'main');
+
 Router::get('/admin/peculiarities', PeculiaritiesAdminController::class, 'main');
+Router::get('/admin/peculiarities/edit', PeculiaritiesAdminController::class, 'edit');
+Router::post('/admin/peculiarities/update', PeculiaritiesAdminController::class, 'update');
 
 Router::get('/admin/users', UsersAdminController::class, 'main');
 Router::get('/admin/users/edit', UsersAdminController::class, 'edit');
@@ -78,19 +82,19 @@ Router::post('/admin/users/update', UsersAdminController::class, 'update');
 Router::post('/admin/users/delete', UsersAdminController::class, 'delete');
 
 Router::get('/admin/photos', PhotosAdminController::class, 'main');
-Router::post('/admin/photos/create', PhotosAdminController::class, 'create');
+Router::post('/admin/photos/store', PhotosAdminController::class, 'store');
 Router::get('/admin/photos/edit', PhotosAdminController::class, 'edit');
 Router::post('/admin/photos/update', PhotosAdminController::class, 'update');
 Router::post('/admin/photos/delete', PhotosAdminController::class, 'delete');
 
 Router::get('/admin/video', VideoAdminController::class, 'main');
-Router::post('/admin/video/create', VideoAdminController::class, 'create');
+Router::post('/admin/video/store', VideoAdminController::class, 'store');
 Router::get('/admin/video/edit', VideoAdminController::class, 'edit');
 Router::post('/admin/video/update', VideoAdminController::class, 'update');
 Router::post('/admin/video/delete', VideoAdminController::class, 'delete');
 
 Router::get('/admin/audio', AudioAdminController::class, 'main');
-Router::post('/admin/audio/create', AudioAdminController::class, 'create');
+Router::post('/admin/audio/store', AudioAdminController::class, 'store');
 Router::get('/admin/audio/edit', AudioAdminController::class, 'edit');
 Router::post('/admin/audio/update', AudioAdminController::class, 'update');
 Router::post('/admin/audio/delete', AudioAdminController::class, 'delete');

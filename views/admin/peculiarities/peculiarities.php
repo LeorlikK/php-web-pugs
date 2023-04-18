@@ -10,25 +10,7 @@
         <div class="admin">
             <?php require_once 'views/components/admin_nav.php'; ?>
         </div>
-        <div class="row" style="margin: 50px 50px 50px 50px">
-            <div class="col-3">
-                <label for="peculiaritiesId">peculiarities</label>
-                <select id="peculiaritiesId">
-                    <option selected disabled>1</option>
-                    <option>all</option>
-                    <option>create</option>
-                </select>
-            </div>
-            <div class="col-3">
-                <label for="peculiaritiesId">peculiarities</label>
-                <select id="peculiaritiesId">
-                    <option selected disabled>1</option>
-                    <option>all</option>
-                    <option>create</option>
-                </select>
-            </div>
 
-        </div>
         <table class="table admin-table">
             <thead class="table">
             <tr>
@@ -37,7 +19,6 @@
                 <th scope="col">Text</th>
                 <th scope="col">Created_at</th>
                 <th scope="col">Updated_at</th>
-                <th scope="col"></th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -49,8 +30,7 @@
                 <td><?=\App\Http\Services\StrService::stringCut($result['text'], 20)?></td>
                 <td><?=$result['created_at']?></td>
                 <td><?=$result['updated_at']?></td>
-                <td>Update</td>
-                <td>Delete</td>
+                <td><a class="admin-btn-update" href="/admin/peculiarities/edit?id=<?=$result['id']?>">Update</a></td>
             </tr>
             <?php endforeach; ?>
             </tbody>

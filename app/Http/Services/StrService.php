@@ -44,7 +44,7 @@ class StrService
         return $string;
     }
 
-    public static function stringFilter(array|string $content):array|string
+    public static function stringFilter(array|string|null $content):array|string|null
     {
         if (is_array($content)){
             foreach ($content as &$array){
@@ -59,8 +59,7 @@ class StrService
             $content = trim($content);
             $content = urldecode($content);
             return htmlspecialchars($content);
-
         }
-        return '';
+        return null;
     }
 }

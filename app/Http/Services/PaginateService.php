@@ -40,6 +40,11 @@ class PaginateService
         return DB::select("SELECT COUNT($field) FROM $table")->fetch()['count'];
     }
 
+    public function lastPageForNews(string $table, string $field='id'):int
+    {
+        return DB::select("SELECT COUNT($field) FROM $table WHERE publish = true")->fetch()['count'];
+    }
+
     public function lastPageForComments(string $table, $relations_id, string $field='id'):int
     {
         return DB::select("SELECT COUNT($field) FROM $table WHERE news_id = ?", [$relations_id])->fetch()['count'];

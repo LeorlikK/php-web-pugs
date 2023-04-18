@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PersonalArea;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Requests\PersonalArea\LoginRequest;
+use App\Http\Services\MailService;
 use App\Http\Services\MediaService;
 use App\Http\Services\StrService;
 use Database\DB;
@@ -12,18 +13,19 @@ use Views\View;
 
 class PersonalAreaController
 {
-    public function main():View
+    public function __construct()
     {
         if (!Authorization::authCheck()) header('Location: /');
+    }
 
+    public function main():View
+    {
         $user = DB::select("SELECT * FROM users WHERE email = '{$_SESSION['authorize']}'")->fetch();
         return new View('personal_area.main', ['user' => $user]);
     }
 
-    public function loginUpdate():View
+    public function loginUpdate():?View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $request = [
             'login' => StrService::stringFilter($_POST['login']),
         ];
@@ -39,10 +41,8 @@ class PersonalAreaController
         }
     }
 
-    public function avatarUpdate():View
+    public function avatarUpdate():?View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $avatar = $_FILES['avatar'];
         $errors = PhotoRequest::validated($avatar);
 
@@ -57,7 +57,7 @@ class PersonalAreaController
                 unlink($user['avatar']);
             }
         }
-        $url = MediaService::generateUrl($avatar, 'resources/images/avatar/', 'users', 'avatar');
+        $url = MediaService::generateUniqueUrl($avatar, 'resources/images/avatar/', 'users', 'avatar');
         DB::update("UPDATE users SET avatar = ? WHERE email = ?", [$url, $_SESSION['authorize']]);
         move_uploaded_file($avatar['tmp_name'], $url);
         header('Location: /office');
@@ -66,20 +66,11 @@ class PersonalAreaController
 
     public function emailSend()
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
-        $to = "leorl1k93@gmail.com";
-        $from = $_SESSION['authorize'];
-        $message = htmlspecialchars($_POST['emailSend']);
-        $message = urldecode($message);
-        $message = trim($message);
-        $headers = "From: $from" . "\r\n" .
-            "Reply-To: $to" . "\r\n" .
-            "X-Mailer: PHP/" . phpversion();
-        if (mail($to, 'Pugs', $message, $headers)){
-            header('Location: /office');
-        }else{
-            header('Location: /office');
-        }
+        $mail = new MailService();
+        $user = DB::select("SELECT email, login FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
+        $email = $user['email'];
+        $login = $user['login'];
+        $message = StrService::stringFilter($_POST['emailSend']);
+        $mail->admin($email, $login, $message);
     }
 }

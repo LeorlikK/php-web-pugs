@@ -16,6 +16,8 @@ class CommentsController
 {
     public function create():string
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $user = DB::select("SELECT * FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
 
         $dateTime = new DateTime();
@@ -41,6 +43,8 @@ class CommentsController
 
     public function createDop():string
     {
+        if (!Authorization::authCheck()) header('Location: /');
+
         $user = DB::select("SELECT * FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
 
         $dateTime = new DateTime();

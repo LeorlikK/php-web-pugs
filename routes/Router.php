@@ -3,6 +3,7 @@
 namespace Routes;
 
 use App\Exceptions\ErrorView;
+use Throwable;
 use Views\View;
 
 class Router
@@ -30,8 +31,14 @@ class Router
         $class = self::$registerList[$method][$url[0]]['class'];
         $function = self::$registerList[$method][$url[0]]['function'];
 
-        $class = new $class();
-        $view = $class->$function();
+//        try {
+            $class = new $class();
+            $view = $class->$function();
+//        }catch (Throwable $exception){
+//            new ErrorView($exception, $exception->getMessage(), $exception->getCode());
+//            exit();
+//        }
+
         if ($view instanceof View){
             $view->viewPrint();
         }else{

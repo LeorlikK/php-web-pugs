@@ -8,18 +8,8 @@ use Database\DB;
 
 class MainController extends Controller
 {
-    public function main()
+    public function main():View
     {
-//        $query = "SELECT * FROM osobennosti WHERE title = ?;";
-//        $result = DB::connect()->prepare($query);
-//        $result->execute(['one']);
-//        $osobennosti = $result->fetch();
-//
-//        $query = "SELECT * FROM osobennosti WHERE title = ?;";
-//        $result = DB::connect()->prepare($query);
-//        $result->execute(['Питание']);
-//        $pitanie = $result->fetch();
-
         return new View('main.main', []);
     }
 }

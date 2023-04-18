@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Media;
 use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Filters\Admin\AdminUsersFilter;
+use App\Http\Requests\Admin\PhotosAdminUpdateRequest;
 use App\Http\Requests\Media\AudioRequest;
 use App\Http\Services\MediaService;
 use App\Http\Services\PaginateService;
@@ -21,41 +22,40 @@ class AudioAdminController
 
     public function __construct()
     {
+        if (!Authorization::authCheck()) header('Location: /');
         $this->paginate = new (PaginateService::class)($_GET);
     }
 
     public function main():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('audio');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $query = "SELECT * FROM audio ORDER BY created_at DESC OFFSET ? LIMIT ?";
-        $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
-
+        $result = DB::select("SELECT * FROM audio ORDER BY created_at DESC OFFSET ? LIMIT ?",
+            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
 
         return new View('admin.media.audio.audio', ['result' => $result, 'paginate' => $paginate]);
     }
 
-    public function create():?View
+    public function store():?View
     {
         $audio = $_FILES['audio'];
-        $error = AudioRequest::validated($audio);
+        $errors = AudioRequest::validated($audio);
 
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $last_page = $this->paginate->lastPage('audio');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
 
-        if ($error){
-            $result = DB::select("SELECT * FROM audio OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
-            return new View('admin.media.audio.audio', ['error' => $error, 'result' => $result, 'paginate' => $paginate]);
+        if ($errors){
+            $result = DB::select("SELECT * FROM audio OFFSET ? LIMIT ?",
+                [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            return new View('admin.media.audio.audio', ['errors' => $errors, 'result' => $result, 'paginate' => $paginate]);
         }
 
-        $url = MediaService::generateUrl($audio, 'resources/audio/', 'audio', 'url');
-        $name = MediaService::createName($audio);
+        $url = MediaService::generateUniqueUrl($audio, 'resources/audio/', 'audio', 'url');
+        $name = MediaService::createName($audio['name']);
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
@@ -69,55 +69,49 @@ class AudioAdminController
 
     public function edit():View
     {
-        if (!Authorization::authCheck()) header('Location: /');
-
+        setcookie('old_value', '', -60*60*24);
         $result = DB::select("SELECT * FROM audio WHERE id = ?", [$_GET['id']])->fetch();
 
         return new View('admin.media.audio.edit', ['result' => $result]);
     }
 
-    public function update()
+    public function update():?View
     {
-        if (!Authorization::authCheck()) header('Location: /');
+        $request = [
+            'name' => StrService::stringFilter($_POST['name']),
+            'id' => $_GET['id']
+        ];
+        $errors = PhotosAdminUpdateRequest::validated($request);
 
-        try {
-            $request = [
-                'name' => StrService::stringFilter($_POST['name']),
-                'id' => $_GET['id']
-            ];
-
-            $pos = strripos($request['name'], '.');
-            if ($pos){
-                $name = mb_substr($request['name'], 0, $pos);
-            }else{
-                $name = $request['name'];
-            }
-
+        if (!$errors) {
+            $name = MediaService::createName($request['name']);
             $dateTime = new DateTime();
             $dateNow = $dateTime->format('Y-m-d H:i:s');
-            DB::update("UPDATE audio SET name = ?, updated_at = ?
-                WHERE id = ?", [$name, $dateNow, $request['id']]);
+            setcookie('old_value', '', -60*60*24);
+            DB::update("UPDATE audio SET name = ?, updated_at = ? WHERE id = ?",
+                [$name, $dateNow, $request['id']]);
 
-            header('Location: /admin/audio/edit?id=' . $_GET['id']);
+            header('Location: /admin/audio/edit?id=' . $request['id']);
             exit();
-        }catch (\Exception $exception){
-            return new ErrorView('Не удалось обновить изображение');
         }
+
+        $result = DB::select("SELECT * FROM audio WHERE id = ?", [$request['id']])->fetch();
+        foreach ($request as $key => $value){
+            $result[$key] = $value;
+        }
+
+        return new View('admin.media.audio.edit', ['result' => $result, 'errors' => $errors]);
     }
 
-    public function delete()
+    public function delete():bool
     {
-        try {
-            $id = StrService::stringFilter($_POST['id']);
+        $id = StrService::stringFilter($_POST['id']);
 
-            $audio = DB::select("SELECT * FROM audio WHERE id = ?", [$id])->fetch();
-            DB::delete("DELETE FROM audio WHERE id = ?", [$id]);
-            if (file_exists($audio['url'])){
-                unlink($audio['url']);
-            }
-            return true;
-        }catch (\Exception $exception){
-            return new ErrorView('Не удалось удалить аудио');
+        $audio = DB::select("SELECT * FROM audio WHERE id = ?", [$id])->fetch();
+        DB::delete("DELETE FROM audio WHERE id = ?", [$id]);
+        if (file_exists($audio['url'])){
+            unlink($audio['url']);
         }
+        return true;
     }
 }

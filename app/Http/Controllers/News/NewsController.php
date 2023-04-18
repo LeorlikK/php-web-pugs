@@ -22,8 +22,8 @@ class NewsController
 
     public function dopComments():string
     {
-        $id = $_GET['id'];
-        $offset = $_GET['offset'];
+        $id = StrService::stringFilter($_GET['id']);
+        $offset = StrService::stringFilter($_GET['offset']);
         $comments = DB::select("
             SELECT comment_relations.*, users.login, users.avatar FROM comment_relations
             JOIN users ON comment_relations.user_id = users.id 
@@ -43,14 +43,15 @@ class NewsController
     public function index():View
     {
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
-        $last_page = $this->paginate->lastPage('news');
+        $last_page = $this->paginate->lastPageForNews('news');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
         $news = DB::select("
             SELECT news.*, COUNT(DISTINCT news_comments.id) + COUNT(comment_relations.id) AS count
             FROM news
             LEFT JOIN news_comments ON news_comments.news_id = news.id
-            LEFT JOIN comment_relations ON news_comments.id = comment_relations.comment_id
+            LEFT JOIN comment_relations ON news_comments.id = comment_relations.comment_id  
+            WHERE news.publish = true
             GROUP BY news.id
             ORDER BY created_at DESC
             OFFSET ?

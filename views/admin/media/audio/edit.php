@@ -25,9 +25,6 @@
                     <th scope="row">Url</th>
                     <td>
                         <input disabled class="login-area" style="width: 100%" autocomplete="off" name="url" type="text" value="<?=$data['result']['url']?>">
-                        <?php if (isset($data['errors']->error['url'])): ?>
-                            <small id="photosHelp" class="form-text coral"><?=$data['errors']->error['url'] ?></small>
-                        <?php endif;?>
                     </td>
                 </tr>
 

@@ -27,6 +27,7 @@ function yes(event){
     router.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     router.onload = () => {
         if (router.response) {
+            console.log(router.response)
             location.reload()
         }
     }
