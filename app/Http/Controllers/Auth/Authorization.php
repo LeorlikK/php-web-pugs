@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Database\DB;
+use App\Http\Controllers\Controller;
 
-class Authorization
+class Authorization extends Controller
 {
     public static string $userName;
     public static ?int $userRole;
@@ -13,24 +13,6 @@ class Authorization
         'moder' => 2,
         'user' => 5,
     ];
-
-//    public static function authCheck():bool
-//    {
-//        $userCookieName = $_COOKIE['email'] ?? null;
-//        $userCookiePassword = $_COOKIE['password'] ?? null;
-//
-//        if ($userCookieName && $userCookiePassword){
-//            $query = "SELECT email, password, role FROM users WHERE email = ?";
-//            $user = DB::get($query, [$userCookieName])->fetch();
-//            if ($user && $userCookiePassword === $user['password']){
-//                self::$userName = $user['email'];
-//                self::$userRole = $user['role'] ?? null;
-//                return true;
-//            }else return false;
-//        }
-//
-//        return false;
-//    }
 
     public static function authCheck():bool
     {

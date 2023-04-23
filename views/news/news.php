@@ -7,7 +7,7 @@
 </header>
 <div class="wrapper">
     <div class="page">
-        <div class="content">
+        <div class="news-content">
             <div class="news-block">
                 <?php foreach ($data['files'] as $news): ?>
                     <div class="news">
@@ -30,11 +30,10 @@
                     </div>
                 <?php endforeach; ?>
             </div>
-
         </div>
     </div>
 
-    <?php require_once 'views/components/pagination.php'; ?>
+    <?php require_once 'views/components/pagination/pagination-news.php'; ?>
     <?php require_once 'views/components/menu.php'; ?>
     <div class="top">
     </div>
@@ -44,7 +43,7 @@
     <span class="visually-hidden">Loading...</span>
 </div>
 
-<script src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
 <script src="/resources/js/news.js"></script>
 </body>
 </html>

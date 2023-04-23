@@ -13,7 +13,7 @@
 
         <div class="content">
             <form action="/admin/news/store" id="formSubmitId" method="post" enctype="multipart/form-data">
-                <div class="form-group">
+                <div class="form-group admin-news-input">
                     <label for="exampleInputEmail1">Выберите изображение</label>
                     <input type="file" name="photos" class="form-control" id="examplePhotos" aria-describedby="photosHelp"
                            accept="image/*,.png,.jpg" value="<?=$data['tmpRoute']?? ''?>" onchange="preview()">
@@ -24,19 +24,19 @@
                         <small id="photosHelp" class="form-text coral"><?=$data['errorsFile']->error['type'] ?></small>
                     <?php endif;?>
                 </div>
-                <div>
+                <div class="admin-news-input">
                     <div class="input-group">
-                        <textarea class="form-control" id="titleInputId" name="title" aria-label="With textarea" placeholder="Title..."><?=$data['result']['title']??''?></textarea>
+                        <textarea class="admin-input-form" id="titleInputId" name="title" aria-label="With textarea" placeholder="Title..."><?=$data['result']['title']??''?></textarea>
                     </div>
                 </div>
-                <div>
+                <div class="admin-news-input">
                     <div class="input-group">
-                        <textarea class="form-control" id="shortInputId" name="short" aria-label="With textarea" placeholder="Short..."><?=$data['result']['short']??''?></textarea>
+                        <textarea class="admin-input-form" id="shortInputId" name="short" aria-label="With textarea" placeholder="Short..."><?=$data['result']['short']??''?></textarea>
                     </div>
                 </div>
-                <div>
-                    <div class="input-group">
-                        <label for="checkboxPublishId">Публикация</label>
+                <div class="admin-news-input">
+                    <div class="admin-input-form">
+                        <label for="checkboxPublishId">Публикация </label>
                         <input type="checkbox" name="publish" <?=(isset($data['result']['publish']) && $data['result']['publish'])?'checked':''?> id="checkboxPublishId">
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                         <small id="photosHelp" class="form-text coral"><?=$data['errors']->error['title'] ?></small>
                     <?php endif;?>
                     <hr class="hr">
-                    <div class="news-image">
+                    <div class="news-image-show">
                         <img class="news-image-image" src="#" alt="none" id="imgPreviewId">
                     </div>
                     <hr class="hr">
@@ -107,10 +107,10 @@
         });
         $('.select2').select2()
     </script>
-    <script src="/resources/js/main.js"></script>
-    <script src="/resources/js/admin_save.js"></script>
-    <script src="/resources/js/admin_news_create.js"></script>
-    <script src="/resources/js/admin_change_image.js"></script>
+<!--    <script type="module" src="/resources/js/main.js"></script>-->
+<!--    <script type="module" src="/resources/js/admin/save.js"></script>-->
+<!--    <script type="module" src="/resources/js/admin/news_create.js"></script>-->
+    <script src="/resources/js/admin/change_image.js"></script>
 </body>
 </html>
 

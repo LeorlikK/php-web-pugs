@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Nurseries;
 
+use App\Http\Controllers\Controller;
 use App\Http\Services\PaginateService;
 use Database\DB;
 use Views\View;
 
-class NurseriesController
+class NurseriesController extends Controller
 {
     private PaginateService $paginate;
 

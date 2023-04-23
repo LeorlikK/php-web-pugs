@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\Authorization;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
@@ -11,6 +13,23 @@ class Test extends Controller
 {
     public function sayTest()
     {
+
+
+        $url = "resources/video/5ff0ed342f593fb3bf4df1be791186b7.mp4";
+        $id = 14;
+
+        $video = DB::select("SELECT * FROM video WHERE id = ?", [$id])->fetch();
+//        DB::delete("DELETE FROM video WHERE id = ?", [$id]);
+        if (file_exists($video['url'])){
+            var_dump('YES');
+            var_dump($video['size']);
+            var_dump($video['url']);
+//            MediaSizeService::minusVideoSize($video['size']);
+//            unlink($video['url']);
+        }
+
+        exit();
+//        return new View('test', []);
 //        $query = "CREATE TABLE nurseries
 //    (
 //        id serial PRIMARY KEY,
@@ -87,9 +106,15 @@ class Test extends Controller
 ////        $query = "CREATE UNIQUE INDEX photo_url_unique ON photos (url)";
 //        DB::connect()->query($query);
 
-        $query = "ALTER TABLE users ADD COLUMN verify varchar(255) DEFAULT false;";
+//        $query = "ALTER TABLE users ADD COLUMN verify varchar(255) DEFAULT false;";
+//        $query = "CREATE TABLE media_size(
+//    id serial PRIMARY KEY,
+//    name varchar(32),
+//    size bigint
+//)";
 //
-        DB::connect()->query($query);
+//        $query = "ALTER TABLE audio ADD COLUMN size bigint";
+//        DB::connect()->query($query);
 
 //        $getFile = file_get_contents('views/components/mail.html');
 //        print $getFile;

@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Admin\Nurseries;
 
 use App\Exceptions\Error;
-use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
-use App\Http\Filters\Admin\AdminUsersFilter;
-use App\Http\Requests\Admin\NewsAdminRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NurseriesAdminRequest;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
@@ -16,9 +14,9 @@ use Database\DB;
 use DateTime;
 use Views\View;
 
-class NurseriesAdminController
+class NurseriesAdminController extends Controller
 {
-    const LIMIT_ITEM_PAGE = 8;
+    const LIMIT_ITEM_PAGE = 10;
 
     private PaginateService $paginate;
 
@@ -42,10 +40,11 @@ class NurseriesAdminController
 
     public function create():View
     {
+        setcookie('create_image_nurseries', '', -60*60*24*365, '/admin/nurseries');
         return new View('admin.nurseries.create', []);
     }
 
-    public function store():?View
+    public function store():View
     {
         $request = [
             'title' => StrService::stringFilter($_POST['title']),
@@ -116,7 +115,7 @@ class NurseriesAdminController
         return new View('admin.nurseries.edit', ['result' => $result]);
     }
 
-    public function update():?View
+    public function update():View
     {
         $request = [
             'id' => StrService::stringFilter($_GET['id']),

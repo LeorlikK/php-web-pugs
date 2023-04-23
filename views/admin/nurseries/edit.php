@@ -31,7 +31,6 @@
                     <th scope="row">ID</th>
                     <td><?=$data['result']['id']?></td>
                 </tr>
-
                 <tr>
                     <th scope="row">Title</th>
                     <td>
@@ -41,7 +40,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Text</th>
                     <td>
@@ -55,7 +53,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Address</th>
                     <td>
@@ -65,7 +62,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Phone</th>
                     <td>
@@ -75,7 +71,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Created_at</th>
                     <td>
@@ -83,7 +78,6 @@
                         <input disabled class="login-area" style="width: 100%" autocomplete="off" name="created_at" type="text" value="<?=$data['result']['created_at']?>">
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Updated_at</th>
                     <td>
@@ -98,7 +92,6 @@
                         <img class="admin-photos-edit" src="#" alt="none" id="imgPreviewId">
                     </td>
                 </tr>
-
                 </tbody>
             </table>
             <button type="button" class="btn btn-primary button-for-image" id="btnForLoginChangeId"> Изменить</button>
@@ -109,8 +102,8 @@
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
-<script src="/resources/js/admin_cancel_save.js"></script>
-<script src="/resources/js/admin_change_image.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script src="/resources/js/admin/cancel-save.js"></script>
+<script src="/resources/js/admin/change_image.js"></script>
 </body>
 </html>

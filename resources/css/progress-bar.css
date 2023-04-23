@@ -1,0 +1,38 @@
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #ccc;
+    position: relative;
+}
+.progress-bar__part {
+    height: 100%;
+    position: absolute;
+    top: 0;
+}
+.part1 {
+    background-color: rgba(32, 167, 251, 0.89);
+}
+.part2 {
+    background-color: rgba(101, 39, 253, 0.86);
+}
+.part3 {
+    background-color: rgba(255, 99, 99, 0.9);
+}
+.col-6.admin-main-margin:before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+.photos-size:before{
+    background-color: #20A7FBE2;
+}
+.video-size:before{
+    background-color: #6527FDDB;
+}
+.audio-size:before{
+    background-color: #FF6363E5;
+}

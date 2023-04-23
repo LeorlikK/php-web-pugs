@@ -6,17 +6,21 @@ use App\Http\Controllers\Auth\Authorization;
     <a class="logo no-logo " href="/">Главная</a>
     <?php
     if (Authorization::authCheck()): ?>
-        <div>
-            <a class="login no-login" type="button" id="authorizationLogoutId">
-                <?=\App\Http\Services\StrService::stringCut($_SESSION['authorize'], 8)?>
-            </a>
-<!--            <div class="spinner-grow" role="status">-->
-<!--                <span class="visually-hidden">Loading...</span>-->
-<!--            </div>-->
-            <a class="login no-login" href="/office" type="button" id="authorizationLogoutId" style="margin-top: 50px">LK</a>
-        </div>
+            <div class="menu">
+                <a class="menu-btn" href="/login">
+                    <?=\App\Http\Services\StrService::stringCut($_SESSION['authorize'], 8)?>
+                </a>
+                <div class="menu-items">
+                    <a class="menu-hover" href="/office">Personal Area</a>
+
+                    <a class="menu-hover" id="authorizationLogoutId" style="cursor: pointer">Logout</a>
+                </div>
+            </div>
     <?php else: ?>
-        <a class="login no-login" href="/login">Войти</a>
+        <div class="menu">
+            <a class="menu-btn" href="/login">Войти</a>
+        </div>
+
     <?php endif ?>
 </div>
 

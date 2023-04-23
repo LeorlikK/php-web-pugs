@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Services\StrService;
 use Database\DB;
-use DateTime;
 use Views\View;
 
-class LoginController
+class LoginController extends Controller
 {
     public function loginShow():View
     {
         return new View('auth.login', []);
     }
 
-    public static function loginCreate():?View
+    public static function loginCreate():View
     {
         $request = [
             'email' => StrService::stringFilter($_POST['email']),
@@ -25,7 +24,7 @@ class LoginController
         $query = "SELECT email, password, role, id, banned, verify FROM users WHERE email = ?";
         $user = DB::select($query, [$request['email']])->fetch();
 
-        if ($user['banned']){
+        if ($user && $user['banned']){
             $error['email'] = 'Пользователь заблокирован';
             return new View('auth.login', ['request' => $request, 'error' => $error]);
         }
@@ -37,19 +36,12 @@ class LoginController
                     $error['email'] = 'Подтвердите свою почту';
                     return new View('auth.login', ['request' => $request, 'error' => $error]);
                 }
-//                $dateTime = new DateTime();
-//                $plusYear = $dateTime->modify('+1 year')->getTimestamp();
-//                setcookie('email', $user['email'], $plusYear, '/');
-//                setcookie('password', $user['password'], $plusYear, '/');
-//                setcookie('PHPSESSID', '', (time() - 60*60*24*365));
-//                session_destroy();
-//                session_set_cookie_params(3600);
-//                session_start();
                 session_unset();
                 session_regenerate_id();
                 $_SESSION['authorize'] = $request['email'];
                 $_SESSION['role'] = Authorization::ROLE[$user['role']];
                 header('Location: /');
+                exit();
             }else{
                 $error['password'] = 'Неверный пароль';
                 return new View('auth.login', ['request' => $request, 'error' => $error]);
@@ -62,9 +54,6 @@ class LoginController
 
     public function logout():bool
     {
-//        $time = time() - (60*60*24*365);
-//        setcookie('email', '', $time);
-//        setcookie('password', '', $time);
         return Authorization::authDelete();
     }
 }

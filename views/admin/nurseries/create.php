@@ -84,9 +84,9 @@
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
-<script src="/resources/js/admin_save.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script src="/resources/js/admin/save.js"></script>
 <!--<script src="/resources/js/admin_cancel_save.js"></script>-->
-<script src="/resources/js/admin_change_image.js"></script>
+<script src="/resources/js/admin/change_image.js"></script>
 </body>
 </html>

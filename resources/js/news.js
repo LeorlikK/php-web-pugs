@@ -1,3 +1,57 @@
+import {request} from "/resources/js/request.js";
+
+function funcLoadFirstsComments(event, lastElement, comments){
+    const target = event.target
+    const targetParent = event.target.parentNode
+    let targetTextContent = event.target.textContent
+
+    if (targetTextContent.indexOf('Показать ответы') !== -1){
+        target.textContent = 'Скрыть комментарии'
+
+        comments.forEach(function (item){
+            loadComments(lastElement, item)
+        })
+
+        if (target.value <= targetParent.querySelector('.btn-add-comments').value){
+            targetParent.querySelector('.btn-add-comments').setAttribute('hidden', 'hidden')
+        }else{
+            targetParent.querySelector('.btn-add-comments').removeAttribute('hidden')
+        }
+    }
+}
+
+function funcLoadLastComments(event, lastElement, comments){
+    const target = event.target
+    target.value = (Number(target.value) + 3)
+
+    comments.forEach(function (item){
+        loadComments(lastElement, item)
+    })
+
+    if (target.value >= target.parentNode.querySelector('.btn-load-comments').value){
+        target.setAttribute('hidden', '')
+    }
+}
+
+async function loadCommentsRequest(event, id, offset, lastElement, func){
+    return new Promise((resolve, reject) => {
+        request(`/news/show/dop-comments?id=${id}&offset=${offset}`, 'get')
+        .then(data  => {
+            const comments = JSON.parse(data)
+            if (func === 'first') {
+                funcLoadFirstsComments(event, lastElement, comments)
+                return resolve(true)
+            }else if (func === 'last'){
+                funcLoadLastComments(event, lastElement, comments)
+                return resolve(true)
+            }
+        })
+        .catch(error => {
+            return reject(false)
+        })
+    })
+}
+
 function loadComments(lastElement, item){
     if (item.avatar === null){
         item.avatar = "resources/images/avatar/avatar_default.png"
@@ -24,87 +78,6 @@ function loadComments(lastElement, item){
     )
 }
 
-// function addComment(lastElement, comment){
-//     lastElement.insertAdjacentHTML('beforebegin',
-//         `<div class="content">
-//         <div class="d-flex flex-start">
-//             <img class="rounded-circle shadow-1-strong me-3" src="/resources/images/avatar/sad-cat-37.jpg"
-//                  alt="avatar" width="65" height="65">
-//                 <div class="flex-grow-1 flex-shrink-1" id="9">
-//                     <div>
-//                         <div class="d-flex justify-content-between align-items-center">
-//                             <p class="mb-1">Kakaraka <span class="small">- 5m ago</span></p>
-//                             <a href="#!"><i class="fas fa-reply fa-xs"></i><span class="small"> reply</span></a>
-//                         </div>
-//                         <p class="small mb-0">
-//                             qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq </p>
-//                     </div>
-//                     <button class="btn-add-comments" hidden="" value="3">Другие ответы</button>
-//                     <div class="news-load-await">
-//                         <div hidden="" class="spinner-grow load-anyway" style="margin-left: 43%" role="status">
-//                             <span class="visually-hidden">Loading...</span>
-//                         </div>
-//                     </div>
-//                 </div>
-//         </div>
-//     </div>`
-//     )
-// }
-
-function funcLoadFirstsComments(event, lastElement, comments){
-    if (event.target.textContent.indexOf('Показать ответы') !== -1){
-        event.target.textContent = 'Скрыть комментарии'
-
-        comments.forEach(function (item){
-            loadComments(lastElement, item)
-        })
-        console.log(event.target.value, event.target.parentNode.querySelector('.btn-add-comments').value)
-        if (event.target.value <= event.target.parentNode.querySelector('.btn-add-comments').value){
-            console.log(event.target.parentNode.querySelector('.btn-add-comments'))
-            event.target.parentNode.querySelector('.btn-add-comments').setAttribute('hidden', 'hidden')
-            // event.target.parentNode.querySelector('.btn-add-comments').remove()
-            // console.log(event.target.parentNode.querySelector('.btn-add-comments'))
-        }else{
-            event.target.parentNode.querySelector('.btn-add-comments').removeAttribute('hidden')
-        }
-    }
-}
-
-function funcLoadLastComments(event, lastElement, comments){
-    event.target.value = (Number(event.target.value) + 3)
-    comments.forEach(function (item){
-        loadComments(lastElement, item)
-    })
-    if (event.target.value >= event.target.parentNode.querySelector('.btn-load-comments').value){
-        event.target.setAttribute('hidden', '')
-    }
-}
-
-async function loadCommentsRequest(event, id, offset, lastElement, func){
-    return new Promise(function (resolve, reject){
-        const router = new XMLHttpRequest()
-        router.open('get', `/news/show/dop-comments?id=${id}&offset=${offset}`)
-        router.onload = () => {
-            if (router.response){
-                const comments = JSON.parse(router.response)
-                if (func === 'first'){
-                    console.log('first')
-                    funcLoadFirstsComments(event, lastElement, comments)
-                    return resolve(true)
-                }else if (func === 'last'){
-                    console.log('last')
-                    funcLoadLastComments(event, lastElement, comments)
-                    return resolve(true)
-                }
-            }else{
-                console.log('FALSE')
-                return reject(false)
-            }
-        }
-        router.send()
-    })
-}
-
 function spinnerGrowOn(target){
     const spinner = target.parentNode.querySelector('.spinner-grow.load-anyway')
     spinner.removeAttribute('hidden')
@@ -116,120 +89,91 @@ function spinnerGrowOff(target){
 }
 
 async function funcLoadComments(event){
-    if (event.target.className === 'btn-load-comments'){
-        console.log(event.target.textContent)
+    const target = event.target
+    const targetParent = target.parentNode
+    if (target.className === 'btn-load-comments'){
         spinnerGrowOn(event.target)
-        const id = event.target.parentNode.id
-
-        const lastElement = event.target.parentNode.querySelector('.btn-add-comments')
-        console.log(event.target.parentNode.lastChild)
-
+        const id = targetParent.id
+        const lastElement = targetParent.querySelector('.btn-add-comments')
         const offset = 0
 
-        if (event.target.textContent.indexOf('Скрыть комментарии') !== -1){
-            spinnerGrowOff(event.target)
-            const commentsForDeleted = event.target.parentNode.querySelectorAll('.d-flex.flex-start.mt-4')
+        if (target.textContent.indexOf('Скрыть комментарии') !== -1){
+            spinnerGrowOff(target)
+            const commentsForDeleted = targetParent.querySelectorAll('.d-flex.flex-start.mt-4')
             commentsForDeleted.forEach(function (item){
                 item.remove()
             })
-            event.target.parentNode.querySelector('.btn-add-comments').value = 3
-            event.target.textContent = `Показать ответы: ${event.target.value}`
-            event.target.parentNode.querySelector('.btn-add-comments').setAttribute('hidden', '')
+            targetParent.querySelector('.btn-add-comments').value = 3
+            target.textContent = `Показать ответы: ${target.value}`
+            targetParent.querySelector('.btn-add-comments').setAttribute('hidden', '')
             return
         }
 
         await loadCommentsRequest(event, id, offset, lastElement, 'first')
-        spinnerGrowOff(event.target)
+        spinnerGrowOff(target)
     }
-    if (event.target.className === 'btn-add-comments'){
-        spinnerGrowOn(event.target)
-        const id = event.target.parentNode.id
-        // const lastElement = event.target.parentNode.lastChild.previousSibling
-        const lastElement = event.target.parentNode.querySelector('.btn-add-comments')
-        const offset = event.target.value
+    else if (target.className === 'btn-add-comments'){
+        spinnerGrowOn(target)
+        const id = targetParent.id
+        const lastElement = targetParent.querySelector('.btn-add-comments')
+        const offset = target.value
 
         await loadCommentsRequest(event, id, offset, lastElement, 'last')
-        spinnerGrowOff(event.target)
+        spinnerGrowOff(target)
     }
-    if (event.target.className === 'small closer-class'){
-        test(event)
+    else if (target.className === 'small closer-class'){
+        inputComment(event)
     }
-    if (event.target.className === 'btn-load-comments leave-comment non-class'){
-        console.log('CLICK')
-        const inputGroup = event.target.closest('.input-group')
+    else if (target.className === 'btn-load-comments leave-comment non-class'){
+        const inputGroup = target.closest('.input-group')
         inputGroup.querySelector('.btn-load-comments.leave-comment.non-class-close').setAttribute('hidden', '')
-        event.target.setAttribute('hidden', '')
+        target.setAttribute('hidden', '')
 
         loadInputGroup(event, inputGroup)
 
         await funcLeaveDopComment(event)
-        console.log('END')
         location.reload()
     }
-    if (event.target.className === 'btn-load-comments leave-comment non-class-close'){
-        console.log('CLOSE')
-        event.target.closest('.non-class').querySelector('.small.closer-class').removeAttribute('hidden')
-        event.target.closest('.non-class-dop').remove()
+    else if (target.className === 'btn-load-comments leave-comment non-class-close'){
+        target.closest('.non-class').querySelector('.small.closer-class').removeAttribute('hidden')
+        target.closest('.non-class-dop').remove()
     }
 }
 
 function funcLeaveComment(event){
-    // if (event.target.parentNode.querySelector('#leave-comment-field').value === ''){
-    //     event.target.parentNode.querySelector('#leave-comment-field').setAttribute('placeholder', 'Введите что-нибудь...')
-    // }else {
-    //     console.log(event.target.parentNode.querySelector('#leave-comment-field').value)
-
-    const inputGroup = event.target.closest('.input-group')
+    const target = event.target
+    const inputGroup = target.closest('.input-group')
     loadInputGroup(event, inputGroup)
 
-    const textarea = event.target.parentNode.querySelector('#leave-comment-field').value
-    const body = `text=${textarea}&news_id=${event.target.value}`
-    const router = new XMLHttpRequest()
-    router.open('post', `/news/comments/create`)
-    router.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    router.onload = () => {
-        if (router.response){
-            console.log(router.response)
-            location.reload()
-
-            // const comments = document.querySelectorAll('.content')
-            // const lastElement = comments[comments.length-1]
-            // const response = JSON.parse(router.response)
-            // console.log(response)
-            // addComment(lastElement, comment)
-        }else{
-            console.log('FALSE')
-        }
+    const textarea = target.parentNode.querySelector('#leave-comment-field').value
+    const body = `text=${textarea}&news_id=${target.value}`
+    const headers = {
+        name: 'Content-Type',
+        value: 'application/x-www-form-urlencoded'
     }
-    router.send(body)
+    request('/news/comments/create', 'post', body, headers)
+    .then(response => location.reload())
+    .catch(response => console.log(response))
 }
 
 function funcLeaveDopComment(event){
-    console.log('START')
-
-    const comment_id = event.target.closest('.flex-grow-1.flex-shrink-1').id
-    const textarea = event.target.parentNode.querySelector('#leave-comment-field').value
-    const body = `text=${textarea}&news_id=${event.target.value}&comment_id=${comment_id}`
-    return new Promise(function (resolve, reject){
-        const router = new XMLHttpRequest()
-        router.open('post', `/news/comments/create-dop`)
-        router.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        router.onload = () => {
-            if (router.response){
-                return resolve(true)
-            }else{
-                console.log('FALSE')
-                return reject(false)
-            }
-        }
-        router.send(body)
-    })
+    const target = event.target
+    const comment_id = target.closest('.flex-grow-1.flex-shrink-1').id
+    const textarea = target.parentNode.querySelector('#leave-comment-field').value
+    const body = `text=${textarea}&news_id=${target.value}&comment_id=${comment_id}`
+    const headers = {
+        name: 'Content-Type',
+        value: 'application/x-www-form-urlencoded'
+    }
+    request('/news/comments/create-dop', 'post', body, headers)
+    .then(response => location.reload())
+    .catch(response => console.log(response))
 }
 
-function test(event){
-    const parentTarget = event.target.closest('.non-class')
-    console.log(parentTarget)
-    const commentParentId = event.target.closest('.flex-grow-1.flex-shrink-1').id
+function inputComment(event){
+    const target = event.target
+    const parentTarget = target.closest('.non-class')
+    const commentParentId = target.closest('.flex-grow-1.flex-shrink-1').id
     parentTarget.insertAdjacentHTML('beforeend',
     `
             <div class="non-class-dop">
@@ -241,10 +185,7 @@ function test(event){
             </div>`
     )
     parentTarget.querySelector('.form-control').addEventListener('input', (event) => blockSendWithoutTextarea(event))
-    event.target.setAttribute('hidden', '')
-    // const element = parentTarget.querySelector('.btn-load-comments.leave-comment.non-class')
-    // element.addEventListener('click', () => testTwo)
-    // console.log(element);
+    target.setAttribute('hidden', '')
 }
 
 function loadInputGroup(event, inputGroup){
@@ -258,13 +199,11 @@ function loadInputGroup(event, inputGroup){
 }
 
 function blockSendWithoutTextarea(event){
-    if (event.target.value === ''){
-        console.log('disable ON')
-        event.target.nextElementSibling.setAttribute('disabled', '')
+    const target = event.target
+    if (target.value === ''){
+        target.nextElementSibling.setAttribute('disabled', '')
     }else{
-        console.log('disable OFF')
-        console.log(event.target.nextElementSibling)
-        event.target.nextElementSibling.removeAttribute('disabled')
+        target.nextElementSibling.removeAttribute('disabled')
     }
 }
 

@@ -10,8 +10,10 @@ function disabledOff(){
             defaultValues[item.name] = item.value
         }
         item.removeAttribute('disabled')
+        item.style.textDecoration = "1px underline #8a6d3b"
     })
 }
+
 function change(event){
     const btnTarget = event.target
     if (btnTarget.textContent === ' Изменить'){
@@ -31,32 +33,39 @@ function change(event){
                 item.textContent = item.value
             }
             item.setAttribute('disabled', '')
+            item.style.textDecoration = "none"
         })
         document.querySelector('#btnForAllSaveId').setAttribute('disabled', '')
         btnTarget.textContent = ' Изменить'
     }
 }
+
 function formLoad(event, btnChange){
     const btn = event.target.querySelector('#btnForAllSaveId')
     btn.setAttribute('disabled', '')
     btn.insertAdjacentHTML('afterbegin', '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
     btnChange.remove()
 }
+
 function setLocalStorage(){
     localStorage.setItem('old', JSON.stringify(defaultValues))
 }
+
 function getLocalStorage(){
     let myCookie = localStorage.getItem('old')
     return JSON.parse(myCookie)
 }
+
 const btnChange = document.querySelector('#btnForLoginChangeId')
 if (btnChange){
     btnChange.addEventListener('click', (event) => change(event))
 }
+
 const formSave = document.querySelector('#formAllSaveId')
 if (formSave){
     formSave.addEventListener('submit', (event) => formLoad(event, btnChange))
 }
+
 const btnSave = document.querySelector('#btnForAllSaveId')
 
 if (document.cookie.indexOf('old_value') !== -1){

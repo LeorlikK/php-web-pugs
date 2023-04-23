@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Users;
 
-use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
+use App\Http\Controllers\Controller;
 use App\Http\Filters\Admin\AdminUsersFilter;
 use App\Http\Requests\Admin\UsersAdminRequest;
 use App\Http\Services\PaginateService;
@@ -12,9 +12,9 @@ use Database\DB;
 use DateTime;
 use Views\View;
 
-class UsersAdminController
+class UsersAdminController extends Controller
 {
-    const LIMIT_ITEM_PAGE = 8;
+    const LIMIT_ITEM_PAGE = 14;
     const SELECT_FILED= [
             'email',
             'login',

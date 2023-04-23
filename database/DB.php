@@ -17,12 +17,6 @@ class DB
     private const  BD_USERNAME = "postgres";
     private const  BD_PASS = "root";
 
-//    private const  BD_DRIVER = "mysql";
-//    private const  BD_HOST = "localhost";
-//    private const  BD_NAME = "laraveltestbd";
-//    private const  BD_USERNAME = "root";
-//    private const  BD_PASS = "root";
-
     public static function connect():PDO
     {
         if (!self::$pdoObj){

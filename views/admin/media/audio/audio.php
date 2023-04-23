@@ -4,7 +4,10 @@
 <body>
 <?php require_once 'views/components/modal_windows/modal_window_audio.php'; ?>
 <header>
-    <?php require_once 'views/components/header.php'; ?>
+    <div class="shapka">
+        <?php require_once 'views/components/header.php'; ?>
+        <?php require_once 'views/components/media_admin_nav.php'; ?>
+    </div>
 </header>
 <div class="wrapper"  style="max-width: 1400px; margin-right: 150px; margin-left: 350px;">
     <div class="page">
@@ -50,12 +53,13 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <?php require_once 'views/components/pagination.php'; ?>
+        <?php require_once 'views/components/pagination/pagination.php'; ?>
         <?php require_once 'views/components/menu.php'; ?>
         <div class="top">
         </div>
     </div>
-    <script src="/resources/js/main.js"></script>
-    <script src="/resources/js/modal_window.js"></script>
+    <script type="module" src="/resources/js/main.js"></script>
+    <script type="module" src="/resources/js/button/btn-load-spinner.js"></script>
+    <script type="module" src="/resources/js/modal_window.js"></script>
 </body>
 </html>

@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Media;
 
-use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
-use App\Http\Requests\Media\PhotoRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\VideoRequest;
 use App\Http\Services\MediaService;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
 
-class VideoController
+class VideoController extends Controller
 {
     private PaginateService $paginate;
 
-    const LIMIT_ITEM_PAGE = 2;
+    const LIMIT_ITEM_PAGE = 8;
 
     public function __construct()
     {
@@ -61,6 +61,7 @@ class VideoController
             [$url, $name, $dateNow, $dateNow]);
 
         move_uploaded_file($video['tmp_name'], $url);
+        MediaSizeService::plusVideoSize($video['size']);
         header("Location: /media/video?page={$this->paginate->getPage()}");
         exit();
     }
@@ -69,13 +70,13 @@ class VideoController
     {
         if (!Authorization::authCheck()) header('Location: /');
 
-        $url = StrService::stringFilter($_POST['delete']);
+        $id = StrService::stringFilter($_POST['delete']);
 
-        if (file_exists($url)){
-            $res = unlink($url);
-            if ($res){
-                DB::delete("DELETE FROM video WHERE url = ?", [$url]);
-            }
+        $video = DB::select("SELECT * FROM audio WHERE id = ?", [$id])->fetch();
+        DB::delete("DELETE FROM video WHERE id = ?", [$id]);
+        if (file_exists($video['url'])){
+            MediaSizeService::minusVideoSize($video['size']);
+            unlink($video['url']);
         }
 
         header("Location: /media/video?page={$this->paginate->getPage()}");

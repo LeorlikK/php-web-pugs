@@ -47,7 +47,7 @@ require_once 'views/components/head.php'; ?>
                         </p>
                         <?php if (Authorization::checkAdmin()): ?>
                         <form action="/media/audio/delete?page=<?=($data['paginate']['current_page']) ?>" id="FormId<?=$buttonId?>" method="post">
-                            <input hidden name="delete" value="<?= $file['url'] ?>">
+                            <input hidden name="delete" value="<?= $file['id'] ?>">
                             <button type="submit" class="btn btn-primary button-for-image"> Удалить</button>
                         </form>
                         <?php endif; ?>
@@ -57,12 +57,13 @@ require_once 'views/components/head.php'; ?>
             <?php endforeach; ?>
         </div>
     </div>
-    <?php require_once 'views/components/pagination.php'; ?>
+    <?php require_once 'views/components/pagination/pagination.php'; ?>
     <?php require_once 'views/components/menu.php'; ?>
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/button/btn-load-spinner.js"></script>
 <script src="/resources/js/media.js"></script>
 </body>
 </html>

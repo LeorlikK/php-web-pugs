@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\Authorization;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
@@ -16,7 +17,7 @@ class PhotosController extends Controller
 {
     private PaginateService $paginate;
 
-    const LIMIT_ITEM_PAGE = 2;
+    const LIMIT_ITEM_PAGE = 8;
 
     public function __construct()
     {
@@ -60,21 +61,22 @@ class PhotosController extends Controller
             [$url, $name, $dateNow, $dateNow]);
 
         move_uploaded_file($photo['tmp_name'], $url);
+        MediaSizeService::plusImageSize($photo['size']);
         header("Location: /media/photos?page={$this->paginate->getPage()}");
         exit();
     }
 
-    public function delete()
+    public function delete():void
     {
         if (!Authorization::authCheck()) header('Location: /');
 
-        $url = StrService::stringFilter($_POST['delete']);
+        $id = StrService::stringFilter($_POST['delete']);
 
-        if (file_exists($url)){
-            $res = unlink($url);
-            if ($res){
-                DB::delete("DELETE FROM photos WHERE url = ?", [$url]);
-            }
+        $photo = DB::select("SELECT * FROM photos WHERE id = ?", [$id])->fetch();
+        DB::delete("DELETE FROM photos WHERE id = ?", [$id]);
+        if (file_exists($photo['url'])){
+            MediaSizeService::minusImageSize($photo['size']);
+            unlink($photo['url']);
         }
 
         header("Location: /media/photos?page={$this->paginate->getPage()}");

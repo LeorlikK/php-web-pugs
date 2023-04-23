@@ -1,5 +1,5 @@
 <?php if ($data['paginate']['last_page'] > 0): ?>
-    <nav aria-label="..." class="paginator-position">
+    <nav aria-label="..." class="paginator-position-news-show">
         <ul class="pagination">
             <li class="page-item <?=($data['paginate']['current_page'] != 1) ?  "" : "disabled" ?>" >
                 <a class="page-link" href="<?=parse_url($_SERVER['REQUEST_URI'])['path']?>?page=1<?=$data['paginate']['query']?>" tabindex="-1">First</a>

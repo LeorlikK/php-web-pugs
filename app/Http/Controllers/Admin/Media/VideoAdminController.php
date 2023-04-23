@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Media;
 
-use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
-use App\Http\Filters\Admin\AdminUsersFilter;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\VideoAdminUpdateRequest;
 use App\Http\Requests\Media\VideoRequest;
 use App\Http\Services\MediaService;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
 
-class VideoAdminController
+class VideoAdminController extends Controller
 {
-    const LIMIT_ITEM_PAGE = 2;
+    const LIMIT_ITEM_PAGE = 14;
 
     private PaginateService $paginate;
 
@@ -38,7 +38,7 @@ class VideoAdminController
         return new View('admin.media.video.video', ['result' => $result, 'paginate' => $paginate]);
     }
 
-    public function store():?View
+    public function store():View
     {
         $video = $_FILES['video'];
         $errors = VideoRequest::validated($video);
@@ -58,10 +58,11 @@ class VideoAdminController
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
-        DB::insert("INSERT INTO video (url, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
-            [$url, $name, $dateNow, $dateNow]);
+        DB::insert("INSERT INTO video (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?, ?)",
+            [$url, $name, $dateNow, $dateNow, $video['size']]);
 
         move_uploaded_file($video['tmp_name'], $url);
+        MediaSizeService::plusVideoSize($video['size']);
         header("Location: /admin/video?page={$this->paginate->getPage()}");
         exit();
     }
@@ -74,7 +75,7 @@ class VideoAdminController
         return new View('admin.media.video.edit', ['result' => $result]);
     }
 
-    public function update():?View
+    public function update():View
     {
         $request = [
             'name' => StrService::stringFilter($_POST['name']),
@@ -109,6 +110,7 @@ class VideoAdminController
         $video = DB::select("SELECT * FROM video WHERE id = ?", [$id])->fetch();
         DB::delete("DELETE FROM video WHERE id = ?", [$id]);
         if (file_exists($video['url'])){
+            MediaSizeService::minusVideoSize($video['size']);
             unlink($video['url']);
         }
         return true;

@@ -17,7 +17,6 @@
                 <thead class="table">
                 </thead>
                 <tbody>
-
                 <tr>
                     <th scope="row">Title</th>
                     <td>
@@ -27,7 +26,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Text</th>
                     <td>
@@ -41,7 +39,6 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 </tbody>
             </table>
             <button type="button" class="btn btn-primary button-for-image" id="btnForLoginChangeId"> Изменить</button>
@@ -52,7 +49,7 @@
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
-<script src="/resources/js/admin_cancel_save.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script src="/resources/js/admin/cancel-save.js"></script>
 </body>
 </html>

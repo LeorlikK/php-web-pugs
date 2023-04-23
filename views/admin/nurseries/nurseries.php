@@ -48,12 +48,12 @@
             </tbody>
         </table>
     </div>
-    <?php require_once 'views/components/pagination.php'; ?>
+    <?php require_once 'views/components/pagination/pagination.php'; ?>
     <?php require_once 'views/components/menu.php'; ?>
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
-<script src="/resources/js/modal_window.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/modal_window.js"></script>
 </body>
 </html>

@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Media;
 
-use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
-use App\Http\Filters\Admin\AdminUsersFilter;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PhotosAdminUpdateRequest;
 use App\Http\Requests\Media\AudioRequest;
 use App\Http\Services\MediaService;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
 
-class AudioAdminController
+class AudioAdminController extends Controller
 {
-    const LIMIT_ITEM_PAGE = 2;
+    const LIMIT_ITEM_PAGE = 14;
 
     private PaginateService $paginate;
 
@@ -38,7 +38,7 @@ class AudioAdminController
         return new View('admin.media.audio.audio', ['result' => $result, 'paginate' => $paginate]);
     }
 
-    public function store():?View
+    public function store():View
     {
         $audio = $_FILES['audio'];
         $errors = AudioRequest::validated($audio);
@@ -59,10 +59,11 @@ class AudioAdminController
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
-        DB::insert("INSERT INTO audio (url, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
-            [$url, $name, $dateNow, $dateNow]);
+        DB::insert("INSERT INTO audio (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?, ?)",
+            [$url, $name, $dateNow, $dateNow, $audio['size']]);
 
         move_uploaded_file($audio['tmp_name'], $url);
+        MediaSizeService::plusAudioSize($audio['size']);
         header("Location: /admin/audio?page={$this->paginate->getPage()}");
         exit();
     }
@@ -75,7 +76,7 @@ class AudioAdminController
         return new View('admin.media.audio.edit', ['result' => $result]);
     }
 
-    public function update():?View
+    public function update():View
     {
         $request = [
             'name' => StrService::stringFilter($_POST['name']),
@@ -110,6 +111,7 @@ class AudioAdminController
         $audio = DB::select("SELECT * FROM audio WHERE id = ?", [$id])->fetch();
         DB::delete("DELETE FROM audio WHERE id = ?", [$id]);
         if (file_exists($audio['url'])){
+            MediaSizeService::minusAudioSize($audio['size']);
             unlink($audio['url']);
         }
         return true;

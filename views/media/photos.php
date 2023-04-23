@@ -29,20 +29,22 @@ require_once 'views/components/head.php'; ?>
     <?php endif; ?>
     <div class="big-image">
     </div>
-
     <div class="container mt-1">
         <div class="row mb-5" >
             <?php
             $buttonId = 1;
             foreach ($data['files'] as $file): ?>
                 <div class="col-3 mt-4" id="photoContainerId">
-                    <img src="/<?= $file['url'] ?>" alt="..." class="img-thumbnail photo-small">
+                    <div class="img-thumbnail">
+                        <img src="/<?= $file['url'] ?>" alt="..." class="photo-small">
+                    </div>
+                    <input class="name-for-img" disabled hidden name="<?=$file['name']?>">
                     <div>
-                        <p> <?=\App\Http\Services\StrService::stringCut($file['name'], 6)?>
+                        <p> <?=\App\Http\Services\StrService::stringCut($file['name'], 15)?>
                         </p>
                         <?php if (Authorization::checkAdmin()): ?>
                         <form action="/media/photos/delete?page=<?=($data['paginate']['current_page']) ?>" id="FormId<?=$buttonId?>" method="post">
-                            <input hidden name="delete" value="<?= $file['url'] ?>">
+                            <input hidden name="delete" value="<?= $file['id'] ?>">
                             <button type="submit" class="btn btn-primary button-for-image"> Удалить</button>
                         </form>
                         <?php endif; ?>
@@ -52,12 +54,13 @@ require_once 'views/components/head.php'; ?>
             <?php endforeach; ?>
         </div>
     </div>
-    <?php require_once 'views/components/pagination.php'; ?>
+    <?php require_once 'views/components/pagination/pagination.php'; ?>
     <?php require_once 'views/components/menu.php'; ?>
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/button/btn-load-spinner.js"></script>
 <script src="/resources/js/media.js"></script>
 </body>
 </html>

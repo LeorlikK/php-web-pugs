@@ -17,8 +17,6 @@
                 <th scope="col">ID</th>
                 <th scope="col">Title</th>
                 <th scope="col">Text</th>
-                <th scope="col">Created_at</th>
-                <th scope="col">Updated_at</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -28,8 +26,6 @@
                 <th scope="row"><?=$result['id']?></th>
                 <td><?=\App\Http\Services\StrService::stringCut($result['title'], 15)?></td>
                 <td><?=\App\Http\Services\StrService::stringCut($result['text'], 20)?></td>
-                <td><?=$result['created_at']?></td>
-                <td><?=$result['updated_at']?></td>
                 <td><a class="admin-btn-update" href="/admin/peculiarities/edit?id=<?=$result['id']?>">Update</a></td>
             </tr>
             <?php endforeach; ?>
@@ -41,6 +37,6 @@
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
 </body>
 </html>

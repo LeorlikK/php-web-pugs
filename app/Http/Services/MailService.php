@@ -4,9 +4,11 @@ namespace App\Http\Services;
 
 class MailService
 {
-    public function admin($email, $login, $message)
+    const MAIL = "leorl1k93@gmail.com";
+
+    public function admin($email, $login, $message):bool
     {
-        $to = "leorl1k93@gmail.com";
+        $to = self::MAIL;
         $from = $_SESSION['authorize'];
 
         $getHTML = file_get_contents('views/components/mail/admin.php');
@@ -19,17 +21,17 @@ class MailService
             "X-Mailer: PHP/" . phpversion() . "\r\n" .
             "Content-type: text/html; charset=UTF-8\r\n";
         if (mail($to, 'Pugs', $mail, $headers)){
-            header('Location: /office');
+            return true;
         }else{
-            header('Location: /office');
+            return false;
         }
     }
 
-    public function verify($email, $verify)
+    public function verify($email, $verify):bool
     {
         $verify = "http://php-website/registration/verify?email=$email&verify=$verify";
         $to = $email;
-        $from = "leorl1k93@gmail.com";
+        $from = self::MAIL;
 
         $getHTML = file_get_contents('views/components/mail/verify.php');
         $mail = str_replace('<?=$verify?>', $verify, $getHTML);
@@ -40,9 +42,9 @@ class MailService
             "X-Mailer: PHP/" . phpversion() . "\r\n" .
             "Content-type: text/html; charset=UTF-8\r\n";
         if (mail($to, 'Pugs', $mail, $headers)){
-            header('Location: /office');
+            return true;
         }else{
-            header('Location: /office');
+            return false;
         }
     }
 }

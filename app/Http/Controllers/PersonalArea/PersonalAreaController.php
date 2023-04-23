@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PersonalArea;
 
 use App\Http\Controllers\Auth\Authorization;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Requests\PersonalArea\LoginRequest;
 use App\Http\Services\MailService;
@@ -11,7 +12,7 @@ use App\Http\Services\StrService;
 use Database\DB;
 use Views\View;
 
-class PersonalAreaController
+class PersonalAreaController extends Controller
 {
     public function __construct()
     {
@@ -24,7 +25,7 @@ class PersonalAreaController
         return new View('personal_area.main', ['user' => $user]);
     }
 
-    public function loginUpdate():?View
+    public function loginUpdate():View
     {
         $request = [
             'login' => StrService::stringFilter($_POST['login']),
@@ -41,7 +42,7 @@ class PersonalAreaController
         }
     }
 
-    public function avatarUpdate():?View
+    public function avatarUpdate():View
     {
         $avatar = $_FILES['avatar'];
         $errors = PhotoRequest::validated($avatar);
@@ -64,13 +65,21 @@ class PersonalAreaController
         exit();
     }
 
-    public function emailSend()
+    public function emailSend():View
     {
         $mail = new MailService();
-        $user = DB::select("SELECT email, login FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
+        $user = DB::select("SELECT email, login, avatar FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
         $email = $user['email'];
         $login = $user['login'];
         $message = StrService::stringFilter($_POST['emailSend']);
-        $mail->admin($email, $login, $message);
+        $result = $mail->admin($email, $login, $message);
+
+        if ($result){
+            header('Location: /office');
+            exit();
+        }else{
+            $errors['main'] = 'Не удалось отправить сообщение - попробуйте позже';
+            return new View('personal_area.main', ['user' => $user, 'errors' => $errors]);
+        }
     }
 }
