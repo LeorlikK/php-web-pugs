@@ -6,7 +6,6 @@
             </li>
             <?php if ($data['paginate']['current_page'] != 1): ?>
                 <?php for($i=$data['paginate']['current_page']-2;$i!=$data['paginate']['current_page'];$i++) :?>
-
                     <?php if ($i > 0): ?>
                         <li class="page-item"><a class="page-link" href="<?=parse_url($_SERVER['REQUEST_URI'])['path']?>?page=<?=$i.$data['paginate']['query']?>">
                                 <?=$i ?></a></li>

@@ -12,7 +12,6 @@ use App\Http\Controllers\Auth\Authorization;
                 </a>
                 <div class="menu-items">
                     <a class="menu-hover" href="/office">Personal Area</a>
-
                     <a class="menu-hover" id="authorizationLogoutId" style="cursor: pointer">Logout</a>
                 </div>
             </div>
@@ -20,7 +19,6 @@ use App\Http\Controllers\Auth\Authorization;
         <div class="menu">
             <a class="menu-btn" href="/login">Войти</a>
         </div>
-
     <?php endif ?>
 </div>
 

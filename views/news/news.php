@@ -32,17 +32,11 @@
             </div>
         </div>
     </div>
-
     <?php require_once 'views/components/pagination/pagination-news.php'; ?>
     <?php require_once 'views/components/menu.php'; ?>
     <div class="top">
     </div>
 </div>
-
-<div class="spinner-grow load-anyway" role="status">
-    <span class="visually-hidden">Loading...</span>
-</div>
-
 <script type="module" src="/resources/js/main.js"></script>
 <script src="/resources/js/news.js"></script>
 </body>
