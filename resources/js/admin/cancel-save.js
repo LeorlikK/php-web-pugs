@@ -1,34 +1,33 @@
-let oldAndNewValues = {
+let defaultValues = {
 }
 
 function disabledOff(){
-    const allInput = document.querySelectorAll('.change')
-    allInput.forEach(function (item){
+    const allChangeInput = document.querySelectorAll('.change')
+    allChangeInput.forEach(function (item){
         if ('selectedIndex' in item){
-            oldAndNewValues[item.name] = item.selectedIndex
+            defaultValues[item.name] = item.selectedIndex
         }else{
-            oldAndNewValues[item.name] = item.value
+            defaultValues[item.name] = item.value
         }
         item.removeAttribute('disabled')
     })
 }
 function change(event){
     const btnTarget = event.target
-
     if (btnTarget.textContent === ' Изменить'){
         disabledOff()
         document.cookie = `old_value=true`
-        setLocalStorage(oldAndNewValues)
+        setLocalStorage(defaultValues)
         document.querySelector('#btnForAllSaveId').removeAttribute('disabled')
         btnTarget.textContent = ' Отмена'
     }else if (btnTarget.textContent === ' Отмена'){
-        const allInput = document.querySelectorAll('.change')
-        allInput.forEach(function (item){
+        const allChangeInput = document.querySelectorAll('.change')
+        allChangeInput.forEach(function (item){
             if (item.name === 'role'){
                 const selected = document.querySelector('select.change')
-                selected.selectedIndex = oldAndNewValues.role
+                selected.selectedIndex = defaultValues.role
             }else{
-                item.value = oldAndNewValues[item.name]
+                item.value = defaultValues[item.name]
                 item.textContent = item.value
             }
             item.setAttribute('disabled', '')
@@ -43,9 +42,8 @@ function formLoad(event, btnChange){
     btn.insertAdjacentHTML('afterbegin', '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
     btnChange.remove()
 }
-
-function setLocalStorage(value){
-    localStorage.setItem('old', JSON.stringify(oldAndNewValues))
+function setLocalStorage(){
+    localStorage.setItem('old', JSON.stringify(defaultValues))
 }
 function getLocalStorage(){
     let myCookie = localStorage.getItem('old')
@@ -63,7 +61,7 @@ const btnSave = document.querySelector('#btnForAllSaveId')
 
 if (document.cookie.indexOf('old_value') !== -1){
     disabledOff()
-    oldAndNewValues = getLocalStorage()
+    defaultValues = getLocalStorage()
     btnChange.innerHTML = ' Отмена'
     btnSave.removeAttribute('disabled')
 }else{

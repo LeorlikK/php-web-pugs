@@ -10,12 +10,9 @@ inputShortId.addEventListener('input', () => {
     inputShortFakeId.textContent = inputShortId.value
 })
 
-
 $(document).ready(function() {
     const textForSummerText = document.getElementById('innerTextId')
-
     let summernote = $('#summernote').summernote();
-
     let text = textForSummerText.value
     summernote.summernote('code', text);
 });
