@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\News;
 
-use App\Http\Controllers\Auth\Authorization;
+use App\Http\Controllers\Controller;
 use App\Http\Services\NewsService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
 use Views\View;
 
-class NewsController
+class NewsController extends Controller
 {
     private PaginateService $paginate;
 
-    const LIMIT_ITEM_PAGE = 2;
+    const LIMIT_ITEM_PAGE = 14;
 
     public function __construct()
     {
@@ -82,65 +82,6 @@ class NewsController
             LIMIT ? ",
             [$this->paginate->getId(), $offset, self::LIMIT_ITEM_PAGE])->fetchAll();
 
-
-//        $comments = DB::select("SELECT news_comments.*, users.login, users.avatar, ARRAY_AGG(comment_relations.related_comment_id) AS comments FROM news_comments
-//            JOIN users ON news_comments.user_id = users.id JOIN comment_relations ON news_comments.id = comment_relations.comment_id WHERE news_id = ?
-//            GROUP BY news_comments.id, users.login, users.avatar ORDER BY created_at OFFSET ? LIMIT ? ",
-//            [$this->paginate->getId(), $offset, self::LIMIT_ITEM_PAGE])->fetchAll();
-
-//        foreach ($comments as $comment) {
-//                var_dump($comment['id']);
-//                preg_match_all('/[0-9]/', $comment['comments'], $matches);
-//                echo '<pre>';
-//                $comments = DB::select("SELECT news_comments.*, users.login, users.avatar FROM news_comments
-//                    JOIN users ON news_comments.user_id = users.id WHERE news_comments.id IN (4,5) ORDER BY news_comments.created_at LIMIT 3
-//                    ")->fetchAll();
-//                echo '</pre>';
-//        }
-
-
-//        $commentsId = array_column($comments, 'id');
-//        $commentsDop = DB::select("SELECT ARRAY_AGG(comment_relations.*, users.login, users.avatar) AS com FROM comment_relations
-//        JOIN users ON comment_relations.user_id = users.id WHERE comment_relations.comment_id IN(1, 2, 3) GROUP BY comment_relations.comment_id
-//        ")->fetchAll();
-
-//        $commentsDop = DB::select("SELECT comment_relations.comment_id, ARRAY_AGG(comment_relations.*) AS com, users.login, users.avatar
-//FROM comment_relations
-//JOIN users ON comment_relations.user_id = users.id
-//WHERE comment_relations.comment_id IN (1, 2, 3)
-//GROUP BY comment_relations.comment_id, users.login, users.avatar;
-//        ")->fetchAll();
-
-//        $commentsDop = DB::select("
-//SELECT comment_relations.comment_id, (
-//    SELECT JSON_AGG(json_build_object(
-//        'relation_id', comment_relations.id,
-//        'parent_id', comment_relations.comment_id,
-//        'comment_text', comment_relations.text,
-//        'created_at', comment_relations.created_at,
-//        'updated_at', comment_relations.updated_at,
-//        'user', json_build_object(
-//            'id', users.id,
-//            'login', users.login,
-//            'avatar', users.avatar
-//        )
-//    ))
-//    FROM comment_relations
-//    JOIN users ON comment_relations.user_id = users.id
-//    WHERE comment_relations.comment_id = comment_relations.comment_id
-//) AS com
-//FROM comment_relations
-//WHERE comment_relations.comment_id IN (1, 2, 3)
-//GROUP BY comment_relations.comment_id;
-//        ")->fetchAll();
-//        foreach ($comments as $comment) {
-//            $dop = NewsService::getDopComments($comment['id']);
-
-//        }
-//        echo '<pre>';
-//        var_dump($comments);
-//        echo '</pre>';
-//        exit();
         return new View('news.show', ['files' => $news, 'comments' => $comments, 'paginate' => $paginate]);
     }
 }

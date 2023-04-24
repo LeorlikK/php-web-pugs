@@ -2,7 +2,7 @@
 
 namespace Views;
 
-use App\Exceptions\ErrorView;
+use App\Exceptions\ErrorCod;
 
 class View
 {
@@ -29,7 +29,7 @@ class View
             require_once 'views/' . $way . '.php';
             exit();
         }else{
-            new ErrorView('Not View');
+            new ErrorCod('Not View');
         }
     }
 }

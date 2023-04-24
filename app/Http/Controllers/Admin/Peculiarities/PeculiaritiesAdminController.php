@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin\Peculiarities;
 
 use App\Http\Controllers\Auth\Authorization;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PeculiaritiesAdminRequest;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
 use Views\View;
 
-class PeculiaritiesAdminController
+class PeculiaritiesAdminController extends Controller
 {
     const LIMIT_ITEM_PAGE = 8;
 
@@ -31,7 +32,6 @@ class PeculiaritiesAdminController
         $query = "SELECT * FROM osobennosti ORDER BY created_at DESC OFFSET ? LIMIT ?";
         $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
 
-
         return new View('admin.peculiarities.peculiarities', ['result' => $result, 'paginate' => $paginate]);
     }
 
@@ -43,7 +43,7 @@ class PeculiaritiesAdminController
         return new View('admin.peculiarities.edit', ['result' => $result]);
     }
 
-    public function update():?View
+    public function update():View
     {
         $request = [
             'id' => $_GET['id'],

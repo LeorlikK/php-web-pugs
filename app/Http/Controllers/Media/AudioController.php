@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Media;
 
 use App\Http\Controllers\Auth\Authorization;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\AudioRequest;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
 
-class AudioController
+class AudioController extends Controller
 {
     private PaginateService $paginate;
 
-    const LIMIT_ITEM_PAGE = 2;
+    const LIMIT_ITEM_PAGE = 10;
 
     public function __construct()
     {
@@ -34,7 +36,7 @@ class AudioController
         return new View('media.audio', ['files' => $audio, 'paginate' => $paginate]);
     }
 
-    public function store():?View
+    public function store():View
     {
         if (!Authorization::authCheck()) header('Location: /');
 
@@ -60,21 +62,22 @@ class AudioController
             [$url, $name, $dateNow, $dateNow]);
 
         move_uploaded_file($audio['tmp_name'], $url);
+        MediaSizeService::plusAudioSize($audio['size']);
         header("Location: /media/audio?page={$this->paginate->getPage()}");
         exit();
     }
 
-    public function delete()
+    public function delete():void
     {
         if (!Authorization::authCheck()) header('Location: /');
 
-        $url = StrService::stringFilter($_POST['delete']);
+        $id = StrService::stringFilter($_POST['delete']);
 
-        if (file_exists($url)){
-            $res = unlink($url);
-            if ($res){
-                DB::delete("DELETE FROM audio WHERE url = ?", [$url]);
-            }
+        $audio = DB::select("SELECT * FROM audio WHERE id = ?", [$id])->fetch();
+        DB::delete("DELETE FROM audio WHERE id = ?", [$id]);
+        if (file_exists($audio['url'])){
+            MediaSizeService::minusAudioSize($audio['size']);
+            unlink($audio['url']);
         }
 
         header("Location: /media/audio?page={$this->paginate->getPage()}");

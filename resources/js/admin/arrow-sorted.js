@@ -1,8 +1,8 @@
 const upBtn = document.querySelector('#arrow-down-id')
 const downBtn = document.querySelector('#arrow-up-id')
 
-const sorted = new URLSearchParams(window.location.search);
-const upOrDown = sorted.get('sorted');
+const query = new URLSearchParams(window.location.search);
+const upOrDown = query.get('sorted');
 if (upOrDown === 'down'){
     upBtn.className = 'arrow-btn up-active'
 }else{

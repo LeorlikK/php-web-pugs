@@ -10,27 +10,17 @@ class DB
     private static ?self $pdoObj = null;
     private static ?PDO $connect = null;
     public static int $number = 0;
-
-    private const  BD_DRIVER = "pgsql";
-    private const  BD_HOST = "localhost";
-    private const  BD_NAME = "pugs";
-    private const  BD_USERNAME = "postgres";
-    private const  BD_PASS = "root";
-
-//    private const  BD_DRIVER = "mysql";
-//    private const  BD_HOST = "localhost";
-//    private const  BD_NAME = "laraveltestbd";
-//    private const  BD_USERNAME = "root";
-//    private const  BD_PASS = "root";
+    private static array $config = [];
 
     public static function connect():PDO
     {
         if (!self::$pdoObj){
+            self::$config = parse_ini_file('.env');
             self::$number++;
-            $dns = self::BD_DRIVER . ':host=' . self::BD_HOST . ';dbname=' . self::BD_NAME;
+            $dns = self::$config['BD_DRIVER'] . ':host=' . self::$config['BD_HOST'] . ';dbname=' . self::$config['BD_NAME'];
             self::$pdoObj = new self();
             self::$connect = new PDO(
-                $dns, self::BD_USERNAME, self::BD_PASS
+                $dns, self::$config['BD_USERNAME'], self::$config['BD_PASS']
             );
             self::$connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }

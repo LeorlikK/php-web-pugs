@@ -3,7 +3,10 @@
 <?php require_once 'views/components/head.php'; ?>
 <body>
 <header>
-    <?php require_once 'views/components/header.php'; ?>
+    <div class="shapka">
+        <?php require_once 'views/components/header.php'; ?>
+        <?php require_once 'views/components/media_admin_nav.php'; ?>
+    </div>
 </header>
 <div class="wrapper"  style="max-width: 1400px; margin-right: 150px; margin-left: 350px;">
     <div class="page">
@@ -70,8 +73,8 @@
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
-<script src="/resources/js/admin_cancel_save.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/admin/cancel-save.js"></script>
 </body>
 </html>
 

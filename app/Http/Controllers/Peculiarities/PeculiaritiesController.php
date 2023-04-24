@@ -2,48 +2,39 @@
 
 namespace App\Http\Controllers\Peculiarities;
 
+use App\Http\Controllers\Controller;
 use Database\DB;
 use Views\View;
 
-class PeculiaritiesController
+class PeculiaritiesController extends Controller
 {
     public function peculiarities():View
     {
-        $query = "SELECT * FROM osobennosti WHERE title = ?;";
-        $result = DB::select($query, ['one'])->fetch();
-
+        $result = DB::select("SELECT * FROM osobennosti WHERE id = ?", [1])->fetch();
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function care():?View
+    public function care():View
     {
-        $query = "SELECT * FROM osobennosti WHERE title = ?;";
-        $result = DB::select($query, ['Уход и содержание'])->fetch();
-
+        $result = DB::select("SELECT * FROM osobennosti WHERE id = ?", [2])->fetch();
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function nutrition():?View
+    public function nutrition():View
     {
-        $query = "SELECT * FROM osobennosti WHERE title = ?;";
-        $result = DB::select($query, ['Питание'])->fetch();
-
+        $result = DB::select("SELECT * FROM osobennosti WHERE id = ?", [3])->fetch();
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function health():?View
+    public function health():View
     {
-        $query = "SELECT * FROM osobennosti WHERE title = ?;";
-        $result = DB::select($query, ['Здоровье'])->fetch();
-
+        $result = DB::select("SELECT * FROM osobennosti WHERE id = ?", [4])->fetch();
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 
-    public function paddock():?View
+    public function paddock():View
     {
-        $query = "SELECT * FROM osobennosti WHERE title = ?;";
-        $result = DB::select($query, ['Выгул'])->fetch();
-
+        $result = DB::select("SELECT * FROM osobennosti WHERE id = ?", [5])->fetch();
         return new View('peculiarities.peculiarities', ['result' => $result]);
     }
 }

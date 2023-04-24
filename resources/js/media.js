@@ -1,6 +1,21 @@
-function clickImage(element){
-    const bigImage = document.querySelector('.big-image')
-    bigImage.innerHTML = `<img src="${element.src}" alt="..." class="img-thumbnail photo-full">`
+function clickImage(event){
+    const fullName = event.target.closest('.col-3.mt-4').querySelector('.name-for-img').name
+    const bigImage = document.querySelector('body')
+    bigImage.insertAdjacentHTML( 'afterbegin',`
+    <div class="box">
+        <div class="box-border">
+            <div class="box-img" style="background-image: url(${event.target.src})">
+                <span class="close" id="closeBigImgId"></span>
+            </div>
+            <p class="box-img-name">${fullName}</p>
+        </div>
+    </div>`)
+
+    const btnCloseBigImage = document.querySelector('#closeBigImgId')
+    if (btnCloseBigImage){
+        console.log(btnCloseBigImage)
+        btnCloseBigImage.addEventListener('click', (event) => funcCloseBigImage(event))
+    }
 }
 
 function onDelete(target){
@@ -8,18 +23,20 @@ function onDelete(target){
     target.insertAdjacentHTML('afterbegin', '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
 }
 
-function onLoad(){
-    const btn = document.querySelector('#btnFormId')
-    btn.setAttribute('disabled', '')
-    btn.insertAdjacentHTML('afterbegin', '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+function funcCloseBigImage(event){
+    if (event.target.className !== 'box-img'){
+        const imageBox = document.querySelector('.box')
+        imageBox.remove()
+    }
 }
 
 const images = document.querySelector('.container.mt-1')
 images.addEventListener('click', function (event){
-    if (event.target.className === 'img-thumbnail photo-small'){
-        clickImage(event.target)
+    if (event.target.className === 'photo-small'){
+        clickImage(event)
     }
 })
+
 images.addEventListener('submit', function (event){
     console.log(event.target[1]);
     const target = event.target[1]
@@ -27,9 +44,3 @@ images.addEventListener('submit', function (event){
         onDelete(target)
     }
 })
-
-
-const btnLoading = document.querySelector('#formSubmitId')
-if (btnLoading){
-    btnLoading.addEventListener('submit', () => onLoad())
-}

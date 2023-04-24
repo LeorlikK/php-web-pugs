@@ -7,17 +7,16 @@
     <form action="/login" method="post">
         <div class="login-pole">
             <input autocomplete="off" name="email" type="email" value="<?=$data['request']['email']?? ''?>" placeholder="E-mail">
-            <?php if (isset($data['error']['email'])): ?>
-                <p class="text-danger"><?=$data['error']['email']?></p>
-            <?php endif; ?>
         </div>
+        <?php if (isset($data['error']['email'])): ?>
+            <p class="text-danger"><?=$data['error']['email']?></p>
+        <?php endif; ?>
         <div class="login-pole">
             <input autocomplete="off" name="password" type="password" value placeholder="Введите пароль">
-            <?php if (isset($data['error']['password'])): ?>
-                <p class="text-danger"><?=$data['error']['password']?></p>
-            <?php endif; ?>
         </div>
-
+        <?php if (isset($data['error']['password'])): ?>
+            <p class="text-danger"><?=$data['error']['password']?></p>
+        <?php endif; ?>
         <input type="submit" class="lk-enter" value="Войти">
         <a href="/registration" class="lk-enter">Зерегистрироваться</a>
     </form>
@@ -25,6 +24,7 @@
     <div class="top">
     </div>
 </div>
+<script type="module" src="/resources/js/main.js"></script>
 </body>
 </html>
 

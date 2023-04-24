@@ -44,7 +44,7 @@
                 </form>
                 <div>
                     <label for="leave-comment-field">Обратная связь: </label>
-                    <form action="/office/email/send" id="formSubmitId" method="post">
+                    <form action="/office/email/send" id="formSendId" method="post">
                         <div class="flex-grow-1 flex-shrink-1" id="id">
                             <div>
                                 <div class="input-group">
@@ -52,6 +52,9 @@
                                 </div>
                                 <button disabled type="submit" class="btn btn-primary button-for-image" id="btnRelationsId" style="margin-left: 89.6%"> Отправить</button>
                             </div>
+                            <?php if (isset($data['errors']['main'])): ?>
+                                <small id="photosHelp" class="form-text coral"><?=$data['errors']['main'] ?></small>
+                            <?php endif;?>
                         </div>
                     </form>
 
@@ -62,7 +65,7 @@
         <div class="top">
         </div>
     </div>
-    <script src="/resources/js/main.js"></script>
+    <script type="module" src="/resources/js/main.js"></script>
     <script src="/resources/js/personal_area.js"></script>
 
     </body>

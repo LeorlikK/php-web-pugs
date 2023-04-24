@@ -4,7 +4,10 @@
 <body>
 <?php require_once 'views/components/modal_windows/modal_window_video.php'; ?>
 <header>
-    <?php require_once 'views/components/header.php'; ?>
+    <div class="shapka">
+        <?php require_once 'views/components/header.php'; ?>
+        <?php require_once 'views/components/media_admin_nav.php'; ?>
+    </div>
 </header>
 <div class="wrapper"  style="max-width: 1400px; margin-right: 150px; margin-left: 350px;">
     <div class="page">
@@ -30,7 +33,6 @@
                 <th scope="col">ID</th>
                 <th scope="col">Url</th>
                 <th scope="col">Name</th>
-                <th scope="col">Video</th>
                 <th scope="col">Created_at</th>
                 <th scope="col">Updated_at</th>
                 <th scope="col"></th>
@@ -43,11 +45,6 @@
                     <th scope="row"><?=$result['id']?></th>
                     <td><?=\App\Http\Services\StrService::stringCut($result['url'], 15)?></td>
                     <td><?=\App\Http\Services\StrService::stringCut($result['name'], 20)?></td>
-                    <td>
-                        <video controls class="video-player img-thumbnail admin-video" >
-                            <source src="/<?= $result['url'] ?>">
-                        </video>
-                    </td>
                     <td><?=$result['created_at']?></td>
                     <td><?=$result['updated_at']?></td>
                     <td><a class="admin-btn-update" href="/admin/video/edit?id=<?=$result['id']?>">Update</a></td>
@@ -56,13 +53,14 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <?php require_once 'views/components/pagination.php'; ?>
+        <?php require_once 'views/components/pagination/pagination.php'; ?>
         <?php require_once 'views/components/menu.php'; ?>
         <div class="top">
         </div>
     </div>
-    <script src="/resources/js/main.js"></script>
-    <script src="/resources/js/modal_window.js"></script>
+    <script type="module" src="/resources/js/main.js"></script>
+    <script type="module" src="/resources/js/button/btn-load-spinner.js"></script>
+    <script type="module" src="/resources/js/modal_window.js"></script>
 </body>
 </html>
 

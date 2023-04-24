@@ -10,17 +10,15 @@
 </header>
 <div class="wrapper">
     <div class="page">
-        <h1><?=$data['result']['title']?></h1>
+        <h1><?=($data['result']['title'])?></h1>
         <div class="content">
-            <p>
-                <?=$data['result']['text']?>
-            </p>
+                <?=htmlspecialchars_decode($data['result']['text'])?>
         </div>
     </div>
     <?php require_once 'views/components/menu.php'; ?>
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
 </body>
 </html>

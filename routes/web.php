@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Media\AudioAdminController;
 use App\Http\Controllers\Admin\Media\PhotosAdminController;

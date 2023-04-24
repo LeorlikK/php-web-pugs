@@ -11,11 +11,6 @@
         <div class="top">
         </div>
     </div>
-
-<!--    <div class="spinner-grow load-anyway" role="status">-->
-<!--        <span class="visually-hidden">Loading...</span>-->
-<!--    </div>-->
-
-    <script src="/resources/js/main.js"></script>
+    <script type="module" src="/resources/js/main.js"></script>
     </body>
 </html>

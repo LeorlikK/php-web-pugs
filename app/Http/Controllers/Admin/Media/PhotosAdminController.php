@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Admin\Media;
 
 use App\Http\Controllers\Auth\Authorization;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PhotosAdminUpdateRequest;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
 use Views\View;
 
-class PhotosAdminController
+class PhotosAdminController extends Controller
 {
-    const LIMIT_ITEM_PAGE = 8;
+    const LIMIT_ITEM_PAGE = 14;
 
     private PaginateService $paginate;
 
@@ -36,7 +38,7 @@ class PhotosAdminController
         return new View('admin.media.photos.photos', ['result' => $result, 'paginate' => $paginate]);
     }
 
-    public function store():?View
+    public function store():View
     {
         $photo = $_FILES['photos'];
         $errors = PhotoRequest::validated($photo);
@@ -56,10 +58,11 @@ class PhotosAdminController
         $name = MediaService::createName($photo['name']);
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
-        DB::insert("INSERT INTO photos (url, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
-            [$url, $name, $dateNow, $dateNow]);
+        DB::insert("INSERT INTO photos (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?, ?)",
+            [$url, $name, $dateNow, $dateNow, $photo['size']]);
 
         move_uploaded_file($photo['tmp_name'], $url);
+        MediaSizeService::plusImageSize($photo['size']);
         header("Location: /admin/photos?page={$this->paginate->getPage()}");
         exit();
     }
@@ -72,7 +75,7 @@ class PhotosAdminController
         return new View('admin.media.photos.edit', ['result' => $result]);
     }
 
-    public function update():?View
+    public function update():View
     {
         $request = [
             'name' => StrService::stringFilter($_POST['name']),
@@ -108,6 +111,7 @@ class PhotosAdminController
         $photos = DB::select("SELECT * FROM photos WHERE id = ?", [$id])->fetch();
         DB::delete("DELETE FROM photos WHERE id = ?", [$id]);
         if (file_exists($photos['url'])){
+            MediaSizeService::minusImageSize($photos['size']);
             unlink($photos['url']);
         }
         return true;

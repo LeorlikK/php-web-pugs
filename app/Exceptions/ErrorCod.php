@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-class ErrorView
+class ErrorCod
 {
     public function __construct($error, $message='unknown', $cod='unknown')
     {

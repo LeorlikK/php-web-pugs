@@ -17,6 +17,11 @@ function formLoadAvatar(event){
     btn.setAttribute('disabled', '')
     btn.insertAdjacentHTML('afterbegin', '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
 }
+function sendMail(event){
+    const btn = event.target.querySelector('#btnRelationsId')
+    btn.setAttribute('disabled', '')
+    btn.insertAdjacentHTML('afterbegin', '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+}
 function changeBlocked(event){
     const btnTarget = event.target
     const inputFiled = btnTarget.previousElementSibling
@@ -93,4 +98,7 @@ if (btnChangeAvatar){
     btnChangeAvatar.addEventListener('submit', (event) => formLoadAvatar(event))
 }
 
-
+const btnSendMail = document.querySelector('#formSendId')
+if (btnSendMail){
+    btnSendMail.addEventListener('submit', (event) => sendMail(event))
+}

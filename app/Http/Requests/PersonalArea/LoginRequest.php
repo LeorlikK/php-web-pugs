@@ -3,7 +3,6 @@
 namespace App\Http\Requests\PersonalArea;
 
 use App\Http\Requests\Request;
-use Database\DB;
 
 class LoginRequest extends Request
 {

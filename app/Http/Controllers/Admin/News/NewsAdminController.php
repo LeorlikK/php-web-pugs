@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin\News;
 
 use App\Exceptions\Error;
-use App\Exceptions\ErrorView;
 use App\Http\Controllers\Auth\Authorization;
-use App\Http\Filters\Admin\AdminUsersFilter;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NewsAdminRequest;
 use App\Http\Requests\Media\PhotoRequest;
 use App\Http\Services\MediaService;
@@ -15,9 +14,9 @@ use Database\DB;
 use DateTime;
 use Views\View;
 
-class NewsAdminController
+class NewsAdminController extends Controller
 {
-    const LIMIT_ITEM_PAGE = 8;
+    const LIMIT_ITEM_PAGE = 10;
 
     private PaginateService $paginate;
 
@@ -41,10 +40,11 @@ class NewsAdminController
 
     public function create():View
     {
+        setcookie('create_image_news', '', -60*60*24*365, '/admin/news');
         return new View('admin.news.create', []);
     }
 
-    public function store():?View
+    public function store():View
     {
         $request = [
             'title' => StrService::stringFilter($_POST['title']),
@@ -53,7 +53,7 @@ class NewsAdminController
             'publish' => StrService::stringFilter($_POST['publish']??'0')
         ];
 
-        if (empty($_COOKIE['create_image_news'])){
+        if ($_FILES['photos']['size'] !== 0){
             $photo = $_FILES['photos'];
             $errorsFile = PhotoRequest::validated($photo);
         }else{
@@ -116,7 +116,7 @@ class NewsAdminController
         return new View('admin.news.edit', ['result' => $result]);
     }
 
-    public function update():?View
+    public function update():View
     {
         $request = [
             'id' => $_GET['id'],

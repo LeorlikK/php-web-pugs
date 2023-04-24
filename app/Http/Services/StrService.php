@@ -7,7 +7,7 @@ use DateTime;
 
 class StrService
 {
-    public static function format($time)
+    public static function format($time):string
     {
         $dateTime = new DateTime($time);
         $dateTimeNow = new DateTime();

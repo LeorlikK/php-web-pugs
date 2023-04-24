@@ -5,7 +5,6 @@
         <li><a href="/nurseries">Питомники</a></li>
         <li><a href="/news">Новости</a></li>
         <li><a href="/media/photos">Медиа</a></li>
-        <li><a href="forum.html">Форум</a></li>
         <?php
         use App\Http\Controllers\Auth\Authorization;?>
         <?php if (Authorization::checkAdmin()): ?>

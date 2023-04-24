@@ -2,7 +2,7 @@
 
 namespace Routes;
 
-use App\Exceptions\ErrorView;
+use App\Exceptions\ErrorCod;
 use Throwable;
 use Views\View;
 
@@ -25,7 +25,7 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'];
         $url = explode('?', $_SERVER['REQUEST_URI']);
         if (!isset(self::$registerList[$method][$url[0]])) {
-            new ErrorView("Not Founded Class: class - {$url[0]}, method - $method");
+            new ErrorCod("Not Founded Class: class - {$url[0]}, method - $method");
             exit();
         }
         $class = self::$registerList[$method][$url[0]]['class'];
@@ -35,7 +35,7 @@ class Router
             $class = new $class();
             $view = $class->$function();
 //        }catch (Throwable $exception){
-//            new ErrorView($exception, $exception->getMessage(), $exception->getCode());
+//            new ErrorCod($exception, $exception->getMessage(), $exception->getCode());
 //            exit();
 //        }
 

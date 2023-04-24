@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\ErrorView;
+use App\Exceptions\Error;
+use App\Exceptions\ErrorCod;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegistrationRequest;
 use App\Http\Services\MailService;
 use App\Http\Services\MediaService;
@@ -11,14 +13,14 @@ use Database\DB;
 use DateTime;
 use Views\View;
 
-class RegistrationController
+class RegistrationController extends Controller
 {
     public function registrationShow():View
     {
         return new View('auth.registration', []);
     }
 
-    public function registrationCreate()
+    public function registrationCreate():View
     {
         $request = [
             'login' => StrService::stringFilter($_POST['login']),
@@ -34,7 +36,9 @@ class RegistrationController
             $dateNow = $dateTime->format('Y-m-d H:i:s');
             $password = password_hash($request['password-first'], PASSWORD_DEFAULT);
 
-            $defaultRole = Authorization::ROLE[count(Authorization::ROLE) - 1];
+            $roleArray = Authorization::ROLE;
+            $roleArray = array_keys($roleArray);
+            $defaultRole = end($roleArray);
             if ($request['avatar']['size'] > 0){
                 $url = MediaService::generateUniqueUrl($request['avatar'], 'resources/images/avatar/', 'users', 'avatar');
                 move_uploaded_file($request['avatar']['tmp_name'], $url);
@@ -46,20 +50,22 @@ class RegistrationController
             $verifyKey = md5($dateNow);
             $mail->verify($request['email'], $verifyKey);
 
-            $result = DB::insert("INSERT INTO users (email, password, created_at, updated_at, role , login, avatar, verify) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            $result = DB::insert("INSERT INTO users (email, password, created_at, updated_at, role, login, avatar, verify) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                 [$request['email'], $password, $dateNow, $dateNow, $defaultRole, $request['login'], $url, $verifyKey]);
 
             if ($result){
                 $_SESSION['success'] = 'Please verify that this is your email address';
                 header('Location: /');
                 exit();
+            }else{
+                throw new Error('Failed to register user', 500);
             }
         }else{
             return new View('auth.registration', $errors);
         }
     }
 
-    public function verify()
+    public function verify():void
     {
         $request = [
             'email' => StrService::stringFilter($_GET['email']),
@@ -72,11 +78,9 @@ class RegistrationController
         if ($user['verify'] === $request['verify']){
             DB::update("UPDATE users SET verify = ? WHERE email = ?", ['verify', $request['email']]);
             header('Location: /login');
-//            session_unset();
-//            session_regenerate_id();
-//            $_SESSION['authorize'] = $request['email'];
-//            $_SESSION['role'] = 2;
-//            $_SESSION['success'] = 'You have successfully registered';
+            exit();
+        }else{
+            throw new Error('Failed to pass verification', 400);
         }
     }
 }

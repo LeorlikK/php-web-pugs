@@ -1,3 +1,5 @@
 /resources/audio
 /resources/images
 /resources/video
+/.env
+/nginx.conf

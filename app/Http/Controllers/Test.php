@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\Authorization;
+use App\Http\Services\MediaSizeService;
 use App\Http\Services\StrService;
 use Database\DB;
 use DateTime;
@@ -11,6 +13,13 @@ class Test extends Controller
 {
     public function sayTest()
     {
+
+        parse_url();
+        parse_str();
+        parse_ini_file();
+        parse_ini_string();
+
+//        return new View('test', []);
 //        $query = "CREATE TABLE nurseries
 //    (
 //        id serial PRIMARY KEY,
@@ -87,13 +96,22 @@ class Test extends Controller
 ////        $query = "CREATE UNIQUE INDEX photo_url_unique ON photos (url)";
 //        DB::connect()->query($query);
 
-        $query = "ALTER TABLE users ADD COLUMN verify varchar(255) DEFAULT false;";
+//        $query = "ALTER TABLE users ADD COLUMN verify varchar(255) DEFAULT false;";
+//        $query = "CREATE TABLE media_size(
+//    id serial PRIMARY KEY,
+//    name varchar(32),
+//    size bigint
+//)";
 //
-        DB::connect()->query($query);
+//        $query = "ALTER TABLE audio ADD COLUMN size bigint";
+//        DB::connect()->query($query);
 
 //        $getFile = file_get_contents('views/components/mail.html');
 //        print $getFile;
 
-        die();
+//        $query = "CREATE INDEX comment_relation_comment_id_idx ON comment_relations (comment_id)";
+//        DB::connect()->query($query);
+//
+//        die();
     }
 }

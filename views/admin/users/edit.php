@@ -22,7 +22,7 @@
                 <tr>
                     <th scope="row">Email</th>
                     <td>
-                        <input disabled class="login-area change" style="width: 100%" autocomplete="off" name="email" type="text" value="<?=$data['result']['email']?>">
+                        <input disabled class="login-area change" style="width: 100%;" autocomplete="off" name="email" type="text" value="<?=$data['result']['email']?>">
                         <?php if (isset($data['errors']->error['email'])): ?>
                             <small id="photosHelp" class="form-text coral"><?=$data['errors']->error['email'] ?></small>
                         <?php endif;?>
@@ -81,8 +81,8 @@
     <div class="top">
     </div>
 </div>
-<script src="/resources/js/main.js"></script>
-<script src="/resources/js/admin_cancel_save.js"></script>
+<script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/admin/cancel-save.js"></script>
 </body>
 </html>
 

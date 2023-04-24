@@ -6,10 +6,8 @@ function preview(){
     reader.onloadend = function () {
         image.src = reader.result;
     }
-
     if (input){
         reader.readAsDataURL(input)
-        // image.src = reader.result
     }else{
         image.src = '#'
     }

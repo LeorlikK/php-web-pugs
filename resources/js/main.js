@@ -1,20 +1,22 @@
+import {request} from "/resources/js/request.js";
+
 function authorizationLogoutId(logout){
-    console.log(logout);
-    logout.insertAdjacentHTML('afterend', '<div class="spinner-grow" role="status">\n' +
-        '  <span class="visually-hidden">Loading...</span>\n' +
-        '</div>')
-    const router = new XMLHttpRequest()
-    router.open('post', '/logout')
-    router.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    router.onload = () => {
-        if (router.response){
-            console.log(router.response)
-            location.reload()
-        }else{
-            console.log('FALSE')
-        }
+    console.log('lalalaa')
+    // logout.insertAdjacentHTML('afterend', '<div class="spinner-grow" role="status">\n' +
+    //     '  <span class="visually-hidden">Loading...</span>\n' +
+    //     '</div>')
+    const headers = {
+        name: 'Content-Type',
+        value: 'application/x-www-form-urlencoded'
     }
-    router.send()
+    request(`/logout`, 'post', null, headers)
+    .then(data => {
+        location.reload()
+    })
+    .catch(error => {
+        console.log(error)
+        return reject(false)
+    })
 }
 
 function scrollOnTop(){
@@ -24,6 +26,8 @@ function scrollOnTop(){
 const logout = document.querySelector('#authorizationLogoutId')
 if (logout) {
     logout.addEventListener('click', () => authorizationLogoutId(logout))
+}else {
+    console.log('NONONO')
 }
 
 const topScroll = document.querySelector('.top')
