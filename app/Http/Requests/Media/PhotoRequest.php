@@ -14,7 +14,7 @@ class PhotoRequest extends Request
         $self->error = $error;
 
         $self->isLenNotNull('Выберите изображение');
-        $self->isSize('size', 104857600);
+        $self->isSize('size', 262144000);
         $self->isImage('type');
 
         if (count($self->error) > 0) return $self;
@@ -24,7 +24,7 @@ class PhotoRequest extends Request
     protected function isSize($field, $size)
     {
         if (empty($this->error[$field])) {
-            if (($this->request[$field] ?? null) > $size) $this->error[$field] = 'Файл не должен превышать 100 МБ';
+            if (($this->request[$field] ?? null) > $size) $this->error[$field] = 'Файл не должен превышать 250 МБ';
         }
     }
 

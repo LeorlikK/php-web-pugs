@@ -1,5 +1,5 @@
 body {
-    background-image: url(https://images.wallpaperscraft.ru/image/single/mops_sobaka_vysunutyj_iazyk_173403_1920x1080.jpg);
+    background-image: url("/resources/images/static/mops_sobaka_vysunutyj_iazyk_173403_1920x1080.jpg");
     background-size: auto;
     color: #444;
     background-position: 270px;
@@ -151,7 +151,7 @@ h1 {
     bottom: 50%;
     transition: all 0.3s ease-out;
     opacity: 0.7;
-    background-image: url(http://specdetal.net/files/page/000icon-scrollup000.png);
+    background-image: url("/resources/images/static/000icon-scrollup000.png");
     width: 100px;
     height: 100px;
     background-size: 70px;
