@@ -14,21 +14,11 @@ class Test extends Controller
     public function sayTest()
     {
 
+        parse_url();
+        parse_str();
+        parse_ini_file();
+        parse_ini_string();
 
-        $url = "resources/video/5ff0ed342f593fb3bf4df1be791186b7.mp4";
-        $id = 14;
-
-        $video = DB::select("SELECT * FROM video WHERE id = ?", [$id])->fetch();
-//        DB::delete("DELETE FROM video WHERE id = ?", [$id]);
-        if (file_exists($video['url'])){
-            var_dump('YES');
-            var_dump($video['size']);
-            var_dump($video['url']);
-//            MediaSizeService::minusVideoSize($video['size']);
-//            unlink($video['url']);
-        }
-
-        exit();
 //        return new View('test', []);
 //        $query = "CREATE TABLE nurseries
 //    (
@@ -119,6 +109,9 @@ class Test extends Controller
 //        $getFile = file_get_contents('views/components/mail.html');
 //        print $getFile;
 
-        die();
+//        $query = "CREATE INDEX comment_relation_comment_id_idx ON comment_relations (comment_id)";
+//        DB::connect()->query($query);
+//
+//        die();
     }
 }

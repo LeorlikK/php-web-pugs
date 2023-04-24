@@ -1,7 +1,6 @@
 <?php
 use App\Http\Controllers\Auth\Authorization;
 ?>
-
 <div class="bej">
     <a class="logo no-logo " href="/">Главная</a>
     <?php
