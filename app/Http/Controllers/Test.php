@@ -111,7 +111,7 @@ class Test extends Controller
 
 //        $query = "CREATE INDEX comment_relation_comment_id_idx ON comment_relations (comment_id)";
 //        DB::connect()->query($query);
-//
+//          test
 //        die();
     }
 }
