@@ -32,8 +32,8 @@ class NewsAdminController extends Controller
         $last_page = $this->paginate->lastPage('news');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $result = DB::select("SELECT * FROM news ORDER BY created_at DESC OFFSET ? LIMIT ?",
-            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $result = DB::select("SELECT * FROM news ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('admin.news.news', ['result' => $result, 'paginate' => $paginate]);
     }

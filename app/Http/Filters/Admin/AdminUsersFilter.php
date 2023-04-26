@@ -28,7 +28,7 @@ class AdminUsersFilter
             $sql .= " ORDER BY created_at DESC";
         }
 
-        $sql .= "  OFFSET ? LIMIT ?";
+        $sql .= "  LIMIT ? OFFSET ? ";
         return $sql;
     }
 }

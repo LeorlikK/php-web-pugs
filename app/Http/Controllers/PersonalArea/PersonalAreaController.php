@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PersonalArea;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\PhotoRequest;
+use App\Http\Requests\Media\UserPhotoRequest;
 use App\Http\Requests\PersonalArea\LoginRequest;
 use App\Http\Services\MailService;
 use App\Http\Services\MediaService;
@@ -45,7 +46,7 @@ class PersonalAreaController extends Controller
     public function avatarUpdate():View
     {
         $avatar = $_FILES['avatar'];
-        $errors = PhotoRequest::validated($avatar);
+        $errors = UserPhotoRequest::validated($avatar);
 
         if ($errors){
             $user = DB::select("SELECT * FROM users WHERE email = '{$_SESSION['authorize']}'")->fetch();

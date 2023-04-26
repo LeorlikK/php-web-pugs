@@ -32,8 +32,8 @@ class VideoAdminController extends Controller
         $last_page = $this->paginate->lastPage('video');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $result = DB::select("SELECT * FROM video ORDER BY created_at DESC OFFSET ? LIMIT ?",
-            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $result = DB::select("SELECT * FROM video ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('admin.media.video.video', ['result' => $result, 'paginate' => $paginate]);
     }
@@ -49,7 +49,7 @@ class VideoAdminController extends Controller
 
 
         if ($errors){
-            $result = DB::select("SELECT * FROM video OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            $result = DB::select("SELECT * FROM video LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
             return new View('admin.media.video.video', ['errors' => $errors, 'result' => $result, 'paginate' => $paginate]);
         }
 

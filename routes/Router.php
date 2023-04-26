@@ -31,13 +31,13 @@ class Router
         $class = self::$registerList[$method][$url[0]]['class'];
         $function = self::$registerList[$method][$url[0]]['function'];
 
-//        try {
+        try {
             $class = new $class();
             $view = $class->$function();
-//        }catch (Throwable $exception){
-//            new ErrorCod($exception, $exception->getMessage(), $exception->getCode());
-//            exit();
-//        }
+        }catch (Throwable $exception){
+            new ErrorCod($exception, $exception->getMessage(), $exception->getCode());
+            exit();
+        }
 
         if ($view instanceof View){
             $view->viewPrint();

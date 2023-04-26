@@ -45,11 +45,9 @@ class AdminController extends Controller
             }
         }
 
-        $usersOneWeekAgo = $result['date']['count'];
+        $usersOneWeekAgo = $result['date']['COUNT(id)'];
         $usersTwoWeekAgo = $result['date']['two_week'];
 
-//        var_dump($usersOneWeekAgo, $usersTwoWeekAgo);
-//        exit();
         if ($usersTwoWeekAgo !== 0){
             $percentOneWeekTwoWeek = round((($usersOneWeekAgo - $usersTwoWeekAgo)/$usersTwoWeekAgo)*100, 2);
             if ($percentOneWeekTwoWeek > 0) $result['percentChangeArrow'] = 'plus';
@@ -61,5 +59,18 @@ class AdminController extends Controller
         }
 
         return new View('admin.main', ['result' => $result]);
+    }
+
+    public function updateSize():void
+    {
+        $audio = DB::select("SELECT SUM(size) FROM audio", [])->fetch()['SUM(size)']??0;
+        $photos = DB::select("SELECT SUM(size) FROM photos", [])->fetch()['SUM(size)']??0;
+        $video = DB::select("SELECT SUM(size) FROM video", [])->fetch()['SUM(size)']??0;
+
+        DB::update("UPDATE media_size SET size = ? WHERE name = 'audio'", [$audio]);
+        DB::update("UPDATE media_size SET size = ? WHERE name = 'photos'", [$photos]);
+        DB::update("UPDATE media_size SET size = ? WHERE name = 'video'", [$video]);
+
+        header('Location: /admin');
     }
 }

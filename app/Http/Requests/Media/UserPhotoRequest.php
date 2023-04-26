@@ -4,7 +4,7 @@ namespace App\Http\Requests\Media;
 
 use App\Http\Requests\Request;
 
-class VideoRequest extends Request
+class UserPhotoRequest extends Request
 {
     public static function validated(array $request, array $error = []):?self
     {
@@ -13,25 +13,25 @@ class VideoRequest extends Request
         $self->request = $request;
         $self->error = $error;
 
-        $self->isLenNotNull('Выберите видео файл');
-        $self->isSize('size');
+        $self->isLenNotNull('Выберите изображение');
+        $self->isSize('size', 10485760);
         $self->isImage('type');
 
         if (count($self->error) > 0) return $self;
         return null;
     }
 
-    protected function isSize($field)
+    protected function isSize($field, $size)
     {
         if (empty($this->error[$field])) {
-            if (($this->request[$field] ?? null) > 262144000) $this->error[$field] = "Файл не должен превышать 250 МБ";
+            if (($this->request[$field] ?? null) > $size) $this->error[$field] = 'Файл не должен превышать 10 МБ';
         }
     }
 
     protected function isImage($field)
     {
         if (empty($this->error[$field])) {
-            if (explode('/', $this->request[$field])[0] !== 'video') $this->error[$field] = 'Файл должен быть видео';
+            if (explode('/', $this->request[$field])[0] !== 'image') $this->error[$field] = 'Файл должен быть изоброажением';
         }
     }
 }

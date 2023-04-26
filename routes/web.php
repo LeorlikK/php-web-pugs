@@ -72,6 +72,7 @@ Router::post('/office/email/send', PersonalAreaController::class, 'emailSend');
 
 // Admin
 Router::get('/admin', AdminController::class, 'main');
+Router::get('/admin/update-size', AdminController::class, 'updateSize');
 
 Router::get('/admin/peculiarities', PeculiaritiesAdminController::class, 'main');
 Router::get('/admin/peculiarities/edit', PeculiaritiesAdminController::class, 'edit');
@@ -114,5 +115,5 @@ Router::get('/admin/nurseries/edit', NurseriesAdminController::class, 'edit');
 Router::post('/admin/nurseries/update', NurseriesAdminController::class, 'update');
 Router::post('/admin/nurseries/delete', NurseriesAdminController::class, 'delete');
 
-Router::get('/test', \App\Http\Controllers\Test::class, 'sayTest');
+//Router::get('/test', \App\Http\Controllers\Test::class, 'sayTest');
 Router::exec();

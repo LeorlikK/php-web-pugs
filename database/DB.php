@@ -31,6 +31,7 @@ class DB
     public static function select($query, array $params = null):PDOStatement
     {
         $connect = self::connect();
+        $connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $prepare = $connect->prepare($query);
         $prepare->execute($params);
         return $prepare;
@@ -39,6 +40,7 @@ class DB
     public static function insert($query, array $params):int
     {
         $connect = self::connect();
+        $connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $prepare = $connect->prepare($query);
         $prepare->execute($params);
         return $connect->lastInsertId();
@@ -47,6 +49,7 @@ class DB
     public static function update($query, array $params):array
     {
         $connect = self::connect();
+        $connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $prepare = $connect->prepare($query);
         $prepare->execute($params);
         return $prepare->fetchAll();
@@ -55,6 +58,7 @@ class DB
     public static function delete($query, array $params):PDOStatement
     {
         $connect = self::connect();
+        $connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $prepare = $connect->prepare($query);
         $prepare->execute($params);
         return $prepare;

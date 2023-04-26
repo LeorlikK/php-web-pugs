@@ -29,8 +29,8 @@ class PeculiaritiesAdminController extends Controller
         $last_page = $this->paginate->lastPage('nurseries');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $query = "SELECT * FROM osobennosti ORDER BY created_at DESC OFFSET ? LIMIT ?";
-        $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $query = "SELECT * FROM osobennosti ORDER BY id ASC LIMIT ? OFFSET ?";
+        $result = DB::select($query, [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('admin.peculiarities.peculiarities', ['result' => $result, 'paginate' => $paginate]);
     }

@@ -32,8 +32,8 @@ class NurseriesAdminController extends Controller
         $last_page = $this->paginate->lastPage('nurseries');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $result = DB::select("SELECT * FROM nurseries ORDER BY created_at DESC OFFSET ? LIMIT ?",
-            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $result = DB::select("SELECT * FROM nurseries ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('admin.nurseries.nurseries', ['result' => $result, 'paginate' => $paginate]);
     }

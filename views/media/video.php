@@ -68,6 +68,7 @@ require_once 'views/components/head.php'; ?>
     </div>
 </div>
 <script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/media/video.js"></script>
 <script type="module" src="/resources/js/button/btn-load-spinner.js"></script>
 <script src="/resources/js/media.js"></script>
 </body>
