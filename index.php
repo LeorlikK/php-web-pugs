@@ -1,9 +1,11 @@
 <?php
 session_set_cookie_params(3600*24);
 session_start();
-use Database\DB;
+
+use database\DB;
 
 require_once 'app/Http/Providers/ClassProvider.php';
+
 ClassProvider::register();
 
 try {
@@ -13,5 +15,5 @@ try {
     die();
 }
 
-require_once 'routes/web.php';
+require_once __DIR__ . '/routes/web.php';
 

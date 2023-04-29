@@ -25,7 +25,16 @@ use App\Http\Services\StrService;?>
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="mb-1"><?=$comment['login']?> <span class="time small time">- <?=StrService::format($comment['created_at'])?></span></p>
                             <?php if (Authorization::authCheck()): ?>
-                                <i class="fas fa-reply fa-xs"></i><span class="small closer-class" > ответить</span>
+                          		<i class="fas fa-reply fa-xs"></i>
+                                <?php if (Authorization::checkAdmin()): ?>
+                                    <form action="/news/show/delete-comment" method="post"   style="margin-left: 70%">
+                                        <span class="small closer-class delete"> удалить</span>
+                                      	<input hidden disabled value="main">
+                                        <input hidden disabled value="<?=$comment['id']?>">
+                                    </form>
+                                    /
+                                <?php endif; ?>
+                                <span class="small closer-class"> ответить</span>
                             <?php endif; ?>
                         </div>
                         <p class="small mb-0">

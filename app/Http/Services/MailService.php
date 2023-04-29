@@ -2,46 +2,68 @@
 
 namespace App\Http\Services;
 
+use vendor\phpmailer\phpmailer\src\PHPMailer;
+use vendor\phpmailer\phpmailer\src\SMTP;
+use vendor\phpmailer\phpmailer\src\Exception;
+
 class MailService
 {
-    const MAIL = "leorl1k93@gmail.com";
+  	private string $userEmail;
+    private string $userPassword;
+
+    public function __construct()
+    {
+        $this->userEmail = Env::getValue('MAIL_USERNAME');
+        $this->userPassword = Env::getValue('MAIL_PASSWORD');
+    }
 
     public function admin($email, $login, $message):bool
     {
-        $to = self::MAIL;
-        $from = $_SESSION['authorize'];
+      	$to = $this->userEmail;
+        $from = $this->userEmail;
 
         $getHTML = file_get_contents('views/components/mail/admin.php');
-        $mail = str_replace('<?=$email?>', $email, $getHTML);
-        $mail = str_replace('<?=$login?>', $login, $mail);
-        $mail = str_replace('<?=$message?>', $message, $mail);
+        $html = str_replace('<?=$email?>', $email, $getHTML);
+        $html = str_replace('<?=$login?>', $login, $html);
+        $html = str_replace('<?=$message?>', $message, $html);
 
-        $headers = "From: $from" . "\r\n" .
-            "Reply-To: $to" . "\r\n" .
-            "X-Mailer: PHP/" . phpversion() . "\r\n" .
-            "Content-type: text/html; charset=UTF-8\r\n";
-        if (mail($to, 'Pugs', $mail, $headers)){
-            return true;
-        }else{
-            return false;
-        }
+        return $this->sendMail($to, $from, $html);
     }
 
     public function verify($email, $verify):bool
     {
-        $verify = "http://php-website/registration/verify?email=$email&verify=$verify";
+        $verify = Env::getValue('URL') . "/registration/verify?email=$email&verify=$verify";
         $to = $email;
-        $from = self::MAIL;
+        $from = $this->userEmail;
 
         $getHTML = file_get_contents('views/components/mail/verify.php');
-        $mail = str_replace('<?=$verify?>', $verify, $getHTML);
-        $mail = str_replace('<?=$email?>', $email, $mail);
+        $html = str_replace('<?=$verify?>', $verify, $getHTML);
+        $html = str_replace('<?=$email?>', $email, $html);
 
-        $headers = "From: $from" . "\r\n" .
-            "Reply-To: $to" . "\r\n" .
-            "X-Mailer: PHP/" . phpversion() . "\r\n" .
-            "Content-type: text/html; charset=UTF-8\r\n";
-        if (mail($to, 'Pugs', $mail, $headers)){
+        return $this->sendMail($to, $from, $html);
+    }
+  
+  	public function sendMail(string $to, string $from, string $html):bool
+    {
+        $mail = new PHPMailer();
+        $mail->CharSet = 'utf-8';
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = $from;
+        $mail->Password = $this->userPassword;
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        $mail->setFrom($from); #откуда
+        $mail->addAddress($to); #куда
+        $mail->isHTML(true);
+
+        $mail->Subject = 'Pugs';
+        $mail->Body = $html;
+        $mail->AltBody = '';
+
+        if ($mail->send()){
             return true;
         }else{
             return false;

@@ -72,7 +72,7 @@ class VideoController extends Controller
 
         $id = StrService::stringFilter($_POST['delete']);
 
-        $video = DB::select("SELECT * FROM audio WHERE id = ?", [$id])->fetch();
+        $video = DB::select("SELECT * FROM video WHERE id = ?", [$id])->fetch();
         DB::delete("DELETE FROM video WHERE id = ?", [$id]);
         if (file_exists($video['url'])){
             MediaSizeService::minusVideoSize($video['size']);

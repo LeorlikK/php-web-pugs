@@ -2,17 +2,41 @@
 
 namespace App\Exceptions;
 
+use Views\View;
+
 class ErrorCod
 {
-    public function __construct($error, $message='unknown', $cod='unknown')
+    public function __construct($error='unknown', $message='unknown', $code='unknown')
     {
-        match ($cod) {
-            '404' => header("HTTP/1.0 404 Not Found"),
-            '403' => header("HTTP/1.0 404 Forbidden"),
-            '401' => header("HTTP/1.0 404 Unauthorized"),
-            '400' => header("HTTP/1.0 404 Bad Request"),
-            '503' => header("HTTP/1.0 404 Service Unavailable"),
-            default => header("HTTP/1.0 500 Internal Server Error"),
+        if ($message === 'unknown'){
+            match ((string)$code) {
+                '404' => $message = 'Not Found',
+                '403' => $message = 'Forbidden',
+                '401' => $message = 'Unauthorized',
+                '400' => $message = 'Bad Request',
+                '500' => $message = 'Internal Server Error',
+                '503' => $message = 'Service Unavailable',
+                default => $message = 'Unknown Error ',
+            };
+        }
+
+        $view = new View('errors.error', ['error' => $error, 'message' => $message, 'code' => $code]);
+        $view->viewPrint();
+    }
+
+    public static function apacheError():array
+    {
+        $code = $_SERVER['HTTP_REFERER'];
+        match ($code) {
+            '404' => $message = 'Not Found',
+            '403' => $message = 'Forbidden',
+            '401' => $message = 'Unauthorized',
+            '400' => $message = 'Bad Request',
+            '500' => $message = 'Internal Server Error',
+            '503' => $message = 'Service Unavailable',
+            default => $message = 'Unknown Error ',
         };
+
+        return ['code' => $code, 'message' => $message];
     }
 }

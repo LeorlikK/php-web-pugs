@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Nurseries;
 
-use App\Exceptions\Error;
+use App\Exceptions\ErrorCod;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NurseriesAdminRequest;
@@ -92,10 +92,12 @@ class NurseriesAdminController extends Controller
                     $url = MediaService::generateUrlFromString($_COOKIE['create_image_nurseries'], 'resources/images/nurseries/', 'nurseries', 'image');
                     rename($_COOKIE['create_image_nurseries'], $url);
                 }else{
-                    throw new Error('Нет изображения на которое ссылаются куки', 400);
+                    new ErrorCod('unknown', 'There is no image referenced by the cookie', 400);
+                  	exit();
                 }
             }else{
-                throw new Error('Нет куков с изображением', 400);
+                new ErrorCod('unknown', 'No image cookies', 400);
+              	exit();
             }
         }
 

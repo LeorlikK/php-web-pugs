@@ -58,7 +58,7 @@ class AudioController extends Controller
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
-        DB::insert("INSERT INTO audio (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?)",
+        DB::insert("INSERT INTO audio (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?, ?)",
             [$url, $name, $dateNow, $dateNow, $audio['size']]);
 
         move_uploaded_file($audio['tmp_name'], $url);

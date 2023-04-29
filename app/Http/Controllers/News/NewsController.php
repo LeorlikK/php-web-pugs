@@ -86,4 +86,20 @@ class NewsController extends Controller
 
         return new View('news.show', ['files' => $news, 'comments' => $comments, 'paginate' => $paginate]);
     }
+  
+  	public function deleteComment():bool
+    {
+        $id = $_POST['id'];
+        $type = $_POST['type'];
+
+        if ($type === 'main'){
+            DB::delete("DELETE FROM comment_relations WHERE comment_id = ?", [$id]);
+            DB::delete("DELETE FROM news_comments WHERE id = ?", [$id]);
+        }
+        if ($type === 'dop'){
+            DB::delete("DELETE FROM comment_relations WHERE id = ?", [$id]);
+        }
+
+        return true;
+    }
 }

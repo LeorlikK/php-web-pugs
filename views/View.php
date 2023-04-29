@@ -1,6 +1,6 @@
 <?php
 
-namespace Views;
+namespace views;
 
 use App\Exceptions\ErrorCod;
 

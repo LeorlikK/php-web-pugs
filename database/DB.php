@@ -4,6 +4,7 @@ namespace Database;
 
 use PDO;
 use PDOStatement;
+use App\Http\Services\Env;
 
 class DB
 {
@@ -15,7 +16,7 @@ class DB
     public static function connect():PDO
     {
         if (!self::$pdoObj){
-            self::$config = parse_ini_file('.env');
+            self::$config = Env::parse_env();
             self::$number++;
             $dns = self::$config['BD_DRIVER'] . ':host=' . self::$config['BD_HOST'] . ';dbname=' . self::$config['BD_NAME'];
             self::$pdoObj = new self();
