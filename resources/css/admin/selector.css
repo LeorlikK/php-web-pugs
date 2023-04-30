@@ -1,0 +1,12 @@
+.selector-users{
+    width: 200px;
+    background-color: rgba(252, 252, 252, 0.7);
+    border: 1px solid lightcoral!important;
+}
+.selector-users:active{
+    border: 1px solid lightcoral;
+}
+.selector-users:focus{
+    border: 1px solid lightcoral;
+    outline: 1px solid lightcoral;
+}
