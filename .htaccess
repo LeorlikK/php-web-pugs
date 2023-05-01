@@ -1,20 +1,14 @@
-#RewriteEngine On
-#RewriteCond %{QUERY_STRING} .+
-#RewriteRule ^index\.php$ /? [R=301,L]
-#ErrorDocument 403 http://php-website/views/errors/error.php
-#Require ip 92.62.56.73
-#DirectoryIndex index.php
 RewriteEngine On
+
 RewriteCond %{REQUEST_FILENAME} !-f
-AddDefaultCharset UTF-8
-RewriteRule ^(.+)$ index.php?q=$1 [L,QSA]
-AddDefaultCharset utf-8
-php_flag upload_max_filesize 250M
-php_flag post_max_size 250M
-#php_value post_max_size = 250M
-#php_value upload_max_filesize 250M
-#php_value default_charset utf-8
-#Options -Indexes
-#php_value display_errors 0
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+ErrorDocument 400 https://pugs-online.ru/views/errors/apache_error.php?error=400
+ErrorDocument 401 https://pugs-online.ru/views/errors/apache_error.php?error=401
+ErrorDocument 403 https://pugs-online.ru/views/errors/apache_error.php?error=403
+ErrorDocument 404 https://pugs-online.ru/views/errors/apache_error.php?error=404
+ErrorDocument 500 https://pugs-online.ru/views/errors/apache_error.php?error=500
+ErrorDocument 413 https://pugs-online.ru/views/errors/apache_error.php?error=413
 
 
