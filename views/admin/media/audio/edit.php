@@ -13,7 +13,6 @@
         <div class="admin">
             <?php require_once 'views/components/admin_nav.php'; ?>
         </div>
-
         <form action="/admin/audio/update?id=<?=$data['result']['id']?>" id="formAllSaveId" method="post">
             <table class="table admin-table">
                 <thead class="table">
@@ -23,14 +22,12 @@
                     <th scope="row">ID</th>
                     <td><?=\App\Http\Services\StrService::stringCut($data['result']['id'], 15)?></td>
                 </tr>
-
                 <tr>
                     <th scope="row">Url</th>
                     <td>
                         <input disabled class="login-area" style="width: 100%" autocomplete="off" name="url" type="text" value="<?=$data['result']['url']?>">
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Name</th>
                     <td>
@@ -40,14 +37,12 @@
                         <?php endif;?>
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Created_at</th>
                     <td>
                         <input disabled class="login-area" style="width: 100%" autocomplete="off" name="created_at" type="text" value="<?=$data['result']['created_at']?>">
                     </td>
                 </tr>
-
                 <tr>
                     <th scope="row">Updated_at</th>
                     <td>
@@ -57,10 +52,9 @@
                 <tr>
                     <th scope="row">Аудио</th>
                     <td>
-                        <audio controls src="/<?= $data['result']['url'] ?>"></audio>
+                        <audio class="audio-player" controls src="/<?= $data['result']['url'] ?>" preload="metadata"></audio>
                     </td>
                 </tr>
-
                 </tbody>
             </table>
             <button type="button" class="btn btn-primary button-for-image" id="btnForLoginChangeId"> Изменить</button>
@@ -73,6 +67,7 @@
 </div>
 <script type="module" src="/resources/js/main.js"></script>
 <script type="module" src="/resources/js/admin/cancel-save.js"></script>
+<script src="/resources/js/media/audio.js"></script>
 </body>
 </html>
 

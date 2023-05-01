@@ -24,7 +24,7 @@ class NurseriesController extends Controller
         $last_page = $this->paginate->lastPage('nurseries');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $nurseries = DB::select("SELECT * FROM nurseries OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $nurseries = DB::select("SELECT * FROM nurseries LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
         return new View('nurseries.nurseries', ['nurseries' => $nurseries, 'paginate' => $paginate]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\News;
 
-use App\Exceptions\Error;
+use App\Exceptions\ErrorCod;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NewsAdminRequest;
@@ -32,8 +32,8 @@ class NewsAdminController extends Controller
         $last_page = $this->paginate->lastPage('news');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $result = DB::select("SELECT * FROM news ORDER BY created_at DESC OFFSET ? LIMIT ?",
-            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $result = DB::select("SELECT * FROM news ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('admin.news.news', ['result' => $result, 'paginate' => $paginate]);
     }
@@ -92,10 +92,12 @@ class NewsAdminController extends Controller
                     $url = MediaService::generateUrlFromString($_COOKIE['create_image_news'], 'resources/images/news/', 'news', 'image');
                     rename($_COOKIE['create_image_news'], $url);
                 }else{
-                    throw new Error('Нет изображения на которое ссылаются куки', 400);
+                    new ErrorCod('unknown', 'There is no image referenced by the cookie', 400);
+                  	exit();
                 }
             }else{
-                throw new Error('Нет куков с изображением', 400);
+                new ErrorCod('unknown', 'No image cookies', 400);
+              	exit();
             }
         }
 

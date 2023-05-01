@@ -5,7 +5,9 @@ function clickImage(event){
     <div class="box">
         <div class="box-border">
             <div class="box-img" style="background-image: url(${event.target.src})">
-                <span class="close" id="closeBigImgId"></span>
+                <button type="button" class="btn-close" aria-label="Close" id="closeBigImgId"
+                style="margin-left: 98.5%"
+                ></button>
             </div>
             <p class="box-img-name">${fullName}</p>
         </div>

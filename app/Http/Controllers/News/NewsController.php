@@ -29,7 +29,8 @@ class NewsController extends Controller
             JOIN users ON comment_relations.user_id = users.id 
             WHERE comment_relations.comment_id = ?
             ORDER BY comment_relations.created_at
-            OFFSET ? LIMIT 3
+            LIMIT 3
+            OFFSET ?
             ", [$id, $offset])->fetchAll();
 
         foreach ($comments as &$comment) {
@@ -54,10 +55,10 @@ class NewsController extends Controller
             WHERE news.publish = true
             GROUP BY news.id
             ORDER BY created_at DESC
-            OFFSET ?
             LIMIT ?
+            OFFSET ?
             ",
-            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         NewsService::saveCookiePage($paginate['current_page']??0);
 
@@ -78,10 +79,27 @@ class NewsController extends Controller
             JOIN users ON news_comments.user_id = users.id 
             WHERE news_id = ? 
             ORDER BY created_at 
-            OFFSET ? 
-            LIMIT ? ",
-            [$this->paginate->getId(), $offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            LIMIT ?
+            OFFSET ?
+            ",
+            [$this->paginate->getId(), self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('news.show', ['files' => $news, 'comments' => $comments, 'paginate' => $paginate]);
+    }
+  
+  	public function deleteComment():bool
+    {
+        $id = $_POST['id'];
+        $type = $_POST['type'];
+
+        if ($type === 'main'){
+            DB::delete("DELETE FROM comment_relations WHERE comment_id = ?", [$id]);
+            DB::delete("DELETE FROM news_comments WHERE id = ?", [$id]);
+        }
+        if ($type === 'dop'){
+            DB::delete("DELETE FROM comment_relations WHERE id = ?", [$id]);
+        }
+
+        return true;
     }
 }

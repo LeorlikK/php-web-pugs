@@ -35,12 +35,12 @@ require_once 'views/components/head.php'; ?>
             <?php
             $buttonId = 1;
             foreach ($data['files'] as $file): ?>
-                <div class="col-3 mt-4" id="photoContainerId">
-                    <audio controls src="/<?= $file['url'] ?>"></audio>
+                <div class="" id="photoContainerId">
+                        <audio class="audio-player" controls src="/<?= $file['url'] ?>" preload="metadata"></audio>
                     <div>
                         <p>
-                            <?php if (mb_strlen($file['name']) > 6): ?>
-                                <?=mb_substr($file['name'], 0, 6).'...' ?>
+                            <?php if (mb_strlen($file['name']) > 80): ?>
+                                <?=mb_substr($file['name'], 0, 80).'...' ?>
                             <?php else: ?>
                                 <?=$file['name']?>
                             <?php endif; ?>
@@ -65,5 +65,6 @@ require_once 'views/components/head.php'; ?>
 <script type="module" src="/resources/js/main.js"></script>
 <script type="module" src="/resources/js/button/btn-load-spinner.js"></script>
 <script src="/resources/js/media.js"></script>
+<script src="/resources/js/media/audio.js"></script>
 </body>
 </html>

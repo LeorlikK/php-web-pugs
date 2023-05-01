@@ -30,7 +30,7 @@ class PhotosController extends Controller
         $last_page = $this->paginate->lastPage('photos');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $photos = DB::select("SELECT * FROM photos OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $photos = DB::select("SELECT * FROM photos LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('media.photos', ['files' => $photos, 'paginate' => $paginate]);
     }
@@ -48,7 +48,7 @@ class PhotosController extends Controller
 
 
         if ($error){
-            $photos = DB::select("SELECT * FROM photos OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            $photos = DB::select("SELECT * FROM photos LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
             return new View('media.photos', ['error' => $error, 'files' => $photos, 'paginate' => $paginate]);
         }
 
@@ -57,8 +57,8 @@ class PhotosController extends Controller
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
-        DB::insert("INSERT INTO photos (url, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
-            [$url, $name, $dateNow, $dateNow]);
+        DB::insert("INSERT INTO photos (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?, ?)",
+            [$url, $name, $dateNow, $dateNow, $photo['size']]);
 
         move_uploaded_file($photo['tmp_name'], $url);
         MediaSizeService::plusImageSize($photo['size']);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Routes;
+namespace routes;
 
 use App\Exceptions\ErrorCod;
 use Throwable;
@@ -24,20 +24,15 @@ class Router
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $url = explode('?', $_SERVER['REQUEST_URI']);
-        if (!isset(self::$registerList[$method][$url[0]])) {
-            new ErrorCod("Not Founded Class: class - {$url[0]}, method - $method");
+      	if (!isset(self::$registerList[$method][$url[0]])) {
+          	new ErrorCod('unknown', 'Not Found', 404);
             exit();
         }
         $class = self::$registerList[$method][$url[0]]['class'];
         $function = self::$registerList[$method][$url[0]]['function'];
 
-//        try {
-            $class = new $class();
-            $view = $class->$function();
-//        }catch (Throwable $exception){
-//            new ErrorCod($exception, $exception->getMessage(), $exception->getCode());
-//            exit();
-//        }
+        $class = new $class();
+        $view = $class->$function();
 
         if ($view instanceof View){
             $view->viewPrint();

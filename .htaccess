@@ -1,0 +1,14 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+ErrorDocument 400 https://pugs-online.ru/views/errors/apache_error.php?error=400
+ErrorDocument 401 https://pugs-online.ru/views/errors/apache_error.php?error=401
+ErrorDocument 403 https://pugs-online.ru/views/errors/apache_error.php?error=403
+ErrorDocument 404 https://pugs-online.ru/views/errors/apache_error.php?error=404
+ErrorDocument 500 https://pugs-online.ru/views/errors/apache_error.php?error=500
+ErrorDocument 413 https://pugs-online.ru/views/errors/apache_error.php?error=413
+
+

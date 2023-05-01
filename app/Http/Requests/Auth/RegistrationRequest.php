@@ -77,7 +77,7 @@ class RegistrationRequest extends Request
     protected function isSize($field)
     {
         if (empty($this->error[$field])) {
-            if (($this->request['avatar'][$field] ?? null) > 104857600) $this->error[$field] = 'Файл не должен превышать 100 МБ';
+            if (($this->request['avatar'][$field] ?? null) > 10485760) $this->error[$field] = 'Файл не должен превышать 10 МБ';
         }
     }
 

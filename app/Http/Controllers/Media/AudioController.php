@@ -31,7 +31,7 @@ class AudioController extends Controller
         $last_page = $this->paginate->lastPage('audio');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $audio = DB::select("SELECT * FROM audio OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $audio = DB::select("SELECT * FROM audio LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('media.audio', ['files' => $audio, 'paginate' => $paginate]);
     }
@@ -49,7 +49,7 @@ class AudioController extends Controller
 
 
         if ($error){
-            $audio = DB::select("SELECT * FROM audio OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            $audio = DB::select("SELECT * FROM audio LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
             return new View('media.photos', ['error' => $error, 'files' => $audio, 'paginate' => $paginate]);
         }
 
@@ -58,8 +58,8 @@ class AudioController extends Controller
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
-        DB::insert("INSERT INTO audio (url, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
-            [$url, $name, $dateNow, $dateNow]);
+        DB::insert("INSERT INTO audio (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?, ?)",
+            [$url, $name, $dateNow, $dateNow, $audio['size']]);
 
         move_uploaded_file($audio['tmp_name'], $url);
         MediaSizeService::plusAudioSize($audio['size']);

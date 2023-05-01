@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\Authorization;
+use App\Http\Services\MediaService;
 use App\Http\Services\MediaSizeService;
 use App\Http\Services\StrService;
 use Database\DB;
@@ -13,11 +14,10 @@ class Test extends Controller
 {
     public function sayTest()
     {
-
-        parse_url();
-        parse_str();
-        parse_ini_file();
-        parse_ini_string();
+//        parse_url();
+//        parse_str();
+//        parse_ini_file();
+//        parse_ini_string();
 
 //        return new View('test', []);
 //        $query = "CREATE TABLE nurseries
@@ -111,7 +111,7 @@ class Test extends Controller
 
 //        $query = "CREATE INDEX comment_relation_comment_id_idx ON comment_relations (comment_id)";
 //        DB::connect()->query($query);
-//
+//          test
 //        die();
     }
 }

@@ -59,7 +59,6 @@ function loadComments(lastElement, item){
     lastElement.insertAdjacentHTML('beforebegin',
     `<div class="d-flex flex-start mt-4">
                 <a class="me-3" href="#">
-                
                     <img class="rounded-circle shadow-1-strong" src="/${item['avatar']}" alt="error" width="65" height="65">
                 </a>
                 <div class="flex-grow-1 flex-shrink-1">
@@ -68,6 +67,9 @@ function loadComments(lastElement, item){
                             <p class="mb-1">
                                 ${item['login']} <span class="small">- ${item['created_at']}</span>
                             </p>
+                            <span class="small closer-class delete"> удалить</span>
+                            <input hidden disabled value="dop">
+                            <input hidden disabled value="${item.id}">
                         </div>
                         <p class="small mb-0">
                             ${item['text']}
@@ -123,6 +125,25 @@ async function funcLoadComments(event){
     }
     else if (target.className === 'small closer-class'){
         inputComment(event)
+    }
+  	else if (target.className === 'small closer-class delete'){
+        console.log(target.nextElementSibling)
+        const typeItem = target.nextElementSibling
+        const idItem = typeItem.nextElementSibling
+        const type = typeItem.value
+        const id = idItem.value
+        const body = `type=${type}&id=${id}`
+        const headers = {
+            name: 'Content-Type',
+            value: 'application/x-www-form-urlencoded'
+        }
+        request(`/news/show/delete-comment`, 'post', body, headers)
+        .then(data  => {
+            location.reload()
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
     else if (target.className === 'btn-load-comments leave-comment non-class'){
         const inputGroup = target.closest('.input-group')
