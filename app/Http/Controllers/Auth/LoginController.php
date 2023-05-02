@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Render\Redirect;
 use App\Http\Services\StrService;
 use Database\DB;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class LoginController extends Controller
 {

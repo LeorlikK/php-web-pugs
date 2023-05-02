@@ -9,7 +9,7 @@
     <div class="page">
         <div class="news-content">
             <div class="news-block">
-                <?php foreach ($data['files'] as $news): ?>
+                <?php foreach ($data->files as $news): ?>
                     <div class="news">
                         <div class="news-title">
                             <a href="/news/show?&id=<?=$news['id']?>"><h1 class="news-title-text"><?=$news['title']?></h1></a>

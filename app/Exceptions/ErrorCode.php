@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class ErrorCode
 {
@@ -21,7 +21,7 @@ class ErrorCode
         }
 
         $view = new View('errors.error', ['error' => $error, 'message' => $message, 'code' => $code]);
-        $view->viewPrint();
+        $view->render();
     }
 
     public static function apacheError():array

@@ -11,7 +11,7 @@ use App\Http\Services\MailService;
 use App\Http\Services\MediaService;
 use App\Http\Services\StrService;
 use Database\DB;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class PersonalAreaController extends Controller
 {

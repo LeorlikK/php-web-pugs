@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Peculiarities;
 
 use App\Http\Controllers\Controller;
 use Database\DB;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class PeculiaritiesController extends Controller
 {

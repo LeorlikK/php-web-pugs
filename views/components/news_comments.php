@@ -2,21 +2,26 @@
 use App\Http\Services\StrService;?>
 <div class="comment-block">
     <?php if (Authorization::authCheck()): ?>
+    <?php
+        echo '<pre>';
+        var_dump($data->files, $data->comments);
+        echo '</pre>';
+    ?>
     <div class="content">
         <div class="d-flex flex-start">
-            <img class="rounded-circle shadow-1-strong me-3" src="/<?php echo $comment['avatar'] ?? "resources/images/avatar/avatar_default.png"?>" alt="avatar" width="65" height="65">
+            <img class="rounded-circle shadow-1-strong me-3" src="/<?php echo $data->comment['avatar'] ?? "resources/images/avatar/avatar_default.png"?>" alt="avatar" width="65" height="65">
             <div class="flex-grow-1 flex-shrink-1" id="id">
                 <div>
                     <div class="input-group">
                         <textarea class="form-control" id="leave-comment-field" aria-label="With textarea" placeholder="Введите коментарий"></textarea>
-                        <button disabled class="btn-load-comments leave-comment" value="<?=$data['files']['id']?>">Оставить комментарий</button>
+                        <button disabled class="btn-load-comments leave-comment" value="<?=$data->files['id']?>">Оставить комментарий</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <?php endif; ?>
-    <?php foreach ($data['comments'] as $comment): ?>
+    <?php foreach ($data->comments as $comment): ?>
         <div class="content">
             <div class="d-flex flex-start">
                 <img class="rounded-circle shadow-1-strong me-3" src="/<?php echo $comment['avatar']?>" alt="error" width="65" height="65">

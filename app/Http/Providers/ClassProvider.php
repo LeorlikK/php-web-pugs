@@ -7,7 +7,6 @@ class ClassProvider
       spl_autoload_register(function ($class) {
         $file = str_replace('\\', '/', $class) . '.php';
         $file = str_replace('App', 'app', $file);
-        $file = str_replace('Views', 'views', $file);
         $file = str_replace('Database', 'database', $file);
 
         $path = $_SERVER['DOCUMENT_ROOT']  . '/' . $file;

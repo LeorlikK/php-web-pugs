@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\PeculiaritiesAdminRequest;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class PeculiaritiesAdminController extends Controller
 {

@@ -4,7 +4,7 @@ namespace routes;
 
 use App\Exceptions\ErrorCode;
 use Throwable;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class Router
 {
@@ -32,13 +32,7 @@ class Router
         $function = self::$registerList[$method][$url[0]]['function'];
 
         $class = new $class();
-        $view = $class->$function();
-
-        if ($view instanceof View){
-            $view->viewPrint();
-        }else{
-            echo $view;
-            exit();
-        }
+        $response = $class->$function();
+        $response->render();
     }
 }

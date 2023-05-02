@@ -7,7 +7,7 @@ use App\Http\Services\NewsService;
 use App\Http\Services\PaginateService;
 use App\Http\Services\StrService;
 use Database\DB;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class NewsController extends Controller
 {

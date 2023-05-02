@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Nurseries;
 use App\Http\Controllers\Controller;
 use App\Http\Services\PaginateService;
 use Database\DB;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class NurseriesController extends Controller
 {

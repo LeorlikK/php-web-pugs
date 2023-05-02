@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Main;
 
 use App\Http\Controllers\Controller;
-use Views\View;
+use App\Http\Controllers\Render\View;
 use Database\DB;
 
 class MainController extends Controller

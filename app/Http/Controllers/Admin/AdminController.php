@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Database\DB;
 use DateTime;
-use Views\View;
+use App\Http\Controllers\Render\View;
 
 class AdminController extends Controller
 {

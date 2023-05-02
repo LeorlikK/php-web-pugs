@@ -16,15 +16,15 @@
             <div class="news-block">
                 <div class="news">
                     <div class="news-title">
-                        <a href="#"><h1 class="news-title-text"><?=$data['files']['title']?></h1></a>
+                        <a href="#"><h1 class="news-title-text"><?=$data->files['title']?></h1></a>
                     </div>
                     <hr class="hr">
                     <div class="news-image-show">
-                        <img class="news-image-image" src="/<?=$data['files']['image']?>">
+                        <img class="news-image-image" src="/<?=$data->files['image']?>">
                     </div>
                     <hr class="hr">
                     <div class="news-text">
-                        <p class="news-text-text"><?=htmlspecialchars_decode($data['files']['text'])?></p>
+                        <p class="news-text-text"><?=htmlspecialchars_decode($data->files['text'])?></p>
                     </div>
                 </div>
             </div>

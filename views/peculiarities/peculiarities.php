@@ -10,9 +10,9 @@
 </header>
 <div class="wrapper">
     <div class="page">
-        <h1><?=($data['result']['title'])?></h1>
+        <h1><?=($data->result['title'])?></h1>
         <div class="content">
-                <?=htmlspecialchars_decode($data['result']['text'])?>
+                <?=htmlspecialchars_decode($data->result['text'])?>
         </div>
     </div>
     <?php require_once 'views/components/menu.php'; ?>

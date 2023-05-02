@@ -1,4 +1,4 @@
-<?php if ($data['paginate']['last_page'] > 0): ?>
+<?php if ($data->paginate['last_page'] > 0): ?>
     <nav aria-label="..." class="paginator-position-news-show">
         <ul class="pagination">
             <li class="page-item <?=($data['paginate']['current_page'] != 1) ?  "" : "disabled" ?>" >
