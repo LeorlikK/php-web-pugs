@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Views\View;
 
-class ErrorCod
+class ErrorCode
 {
     public function __construct($error='unknown', $message='unknown', $code='unknown')
     {

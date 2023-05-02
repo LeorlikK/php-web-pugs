@@ -36,10 +36,12 @@ class LoginController extends Controller
                     $error['email'] = 'Подтвердите свою почту';
                     return new View('auth.login', ['request' => $request, 'error' => $error]);
                 }
-                session_unset();
-                session_regenerate_id();
-                $_SESSION['authorize'] = $request['email'];
-                $_SESSION['role'] = Authorization::ROLE[$user['role']];
+                $session = password_hash($user['email'] . time(), PASSWORD_DEFAULT);
+                $session = $user['id'] . '_' . $session;
+                DB::update("UPDATE users SET session = ?",
+                    [$session]);
+
+                setcookie('authorize', $session, time() + 3600*24*30, '/');
                 header('Location: /');
                 exit();
             }else{

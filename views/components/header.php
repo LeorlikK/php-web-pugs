@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\Authorization;
     if (Authorization::authCheck()): ?>
             <div class="menu">
                 <a class="menu-btn" href="/login">
-                    <?=\App\Http\Services\StrService::stringCut($_SESSION['authorize'], 8)?>
+                    <?=\App\Http\Services\StrService::stringCut(Authorization::$auth->email, 8)?>
                 </a>
                 <div class="menu-items">
                     <a class="menu-hover" href="/office">Personal Area</a>

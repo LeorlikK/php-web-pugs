@@ -1,5 +1,5 @@
 <?php
-session_set_cookie_params(3600*24);
+session_set_cookie_params(3600*24*30);
 session_start();
 
 use database\DB;

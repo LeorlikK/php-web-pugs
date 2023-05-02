@@ -22,27 +22,22 @@ class CommentsController extends Controller
 
     public function create():string
     {
-        $user = DB::select("SELECT * FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
-
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
 
-
         $id = DB::insert("INSERT INTO news_comments (news_id, user_id, text, created_at, updated_at) VALUES (?,?,?,?,?)",
-            [StrService::stringFilter($_POST['news_id']), $user['id'], StrService::stringFilter($_POST['text']), $dateNow, $dateNow]);
+            [StrService::stringFilter($_POST['news_id']), Authorization::$auth->id, StrService::stringFilter($_POST['text']), $dateNow, $dateNow]);
 
         return json_encode($id);
     }
 
     public function createDop():string
     {
-        $user = DB::select("SELECT * FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
-
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
 
         $id = DB::insert("INSERT INTO comment_relations (comment_id, user_id, text, created_at, updated_at) VALUES (?,?,?,?,?)",
-            [StrService::stringFilter($_POST['comment_id']), $user['id'], StrService::stringFilter($_POST['text']), $dateNow, $dateNow]);
+            [StrService::stringFilter($_POST['comment_id']), Authorization::$auth->id, StrService::stringFilter($_POST['text']), $dateNow, $dateNow]);
 
         return json_encode($id);
     }

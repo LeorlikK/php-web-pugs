@@ -2,7 +2,7 @@
 
 namespace routes;
 
-use App\Exceptions\ErrorCod;
+use App\Exceptions\ErrorCode;
 use Throwable;
 use Views\View;
 
@@ -25,7 +25,7 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'];
         $url = explode('?', $_SERVER['REQUEST_URI']);
       	if (!isset(self::$registerList[$method][$url[0]])) {
-          	new ErrorCod('unknown', 'Not Found', 404);
+          	new ErrorCode('unknown', 'Not Found', 404);
             exit();
         }
         $class = self::$registerList[$method][$url[0]]['class'];
