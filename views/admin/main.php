@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-6 admin-main-margin">
                     <span class="text-span">All Users: </span>
-                    <span><?=$data['result']['count']?></span>
+                    <span><?=$data['result']['COUNT(id)']?></span>
                 </div>
                 <div class="col-6 admin-main-margin photos-size">
                     <span class="text-span">Photos Size: </span>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-6 admin-main-margin">
                     <span class="text-span">Users banned: </span>
-                    <span><?=$data['result']['banned']['count']?></span>
+                    <span><?=$data['result']['banned']['COUNT(id)']?></span>
                 </div>
                 <div class="col-6 admin-main-margin video-size">
                     <span class="text-span">Video Size: </span>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-6 admin-main-margin">
                     <span class="text-span">Users in the last week: </span>
-                    <span><?=$data['result']['date']['count']?></span>
+                    <span><?=$data['result']['date']['COUNT(id)']?></span>
                     <span><?=$data['result']['percentChange']?>%</span>
                     <?php if ($data['result']['percentChangeArrow'] === 'plus'): ?>
                         <?php require_once 'views/components/arrow_percent/plus.php'; ?>
@@ -53,6 +53,13 @@
                     <span class="text-span">All Size: </span>
                     <span><?=\App\Http\Services\MediaSizeService::translate($data['result']['sum'])?></span>
                 </div>
+                <div class="col-6 admin-main-margin">
+                </div>
+                <div class="col-6 admin-main-margin">
+                    <form action="/admin/update-size" method="get" id="formSubmitId">
+                        <button type="submit" class="btn btn-primary button-for-image" id="btnForSaveId" style="margin-top: 0"> Обновить данные</button>
+                    </form>
+                </div>
             </div>
             <div class="progress-bar">
                 <div class="progress-bar__part part1" style="width: <?=$data['result']['image_percent']?>%"></div>
@@ -66,5 +73,6 @@
     </div>
 </div>
 <script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/admin/save.js"></script>
 </body>
 </html>

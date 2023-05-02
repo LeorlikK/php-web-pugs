@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\News;
 
-use App\Exceptions\Error;
+use App\Exceptions\ErrorCode;
 use App\Http\Controllers\Auth\Authorization;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NewsAdminRequest;
@@ -32,8 +32,8 @@ class NewsAdminController extends Controller
         $last_page = $this->paginate->lastPage('news');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $result = DB::select("SELECT * FROM news ORDER BY created_at DESC OFFSET ? LIMIT ?",
-            [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $result = DB::select("SELECT * FROM news ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('admin.news.news', ['result' => $result, 'paginate' => $paginate]);
     }
@@ -92,18 +92,19 @@ class NewsAdminController extends Controller
                     $url = MediaService::generateUrlFromString($_COOKIE['create_image_news'], 'resources/images/news/', 'news', 'image');
                     rename($_COOKIE['create_image_news'], $url);
                 }else{
-                    throw new Error('Нет изображения на которое ссылаются куки', 400);
+                    new ErrorCode('unknown', 'There is no image referenced by the cookie', 400);
+                  	exit();
                 }
             }else{
-                throw new Error('Нет куков с изображением', 400);
+                new ErrorCode('unknown', 'No image cookies', 400);
+              	exit();
             }
         }
 
         setcookie('create_image_news', '', -60*60*24*365, '/admin/news');
-        $user = DB::select("SELECT id FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
         $publish = $request['publish'] === 'on' ? true : 0;
         DB::insert("INSERT INTO news (user_id, image, title, short, text, publish, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            [$user['id'], $url, $request['title'], $request['short'], $request['text'], $publish, $dateNow, $dateNow]);
+            [Authorization::$auth->id, $url, $request['title'], $request['short'], $request['text'], $publish, $dateNow, $dateNow]);
 
         header("Location: /admin/news?page={$this->paginate->getPage()}");
         exit();

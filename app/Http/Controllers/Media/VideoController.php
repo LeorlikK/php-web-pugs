@@ -30,7 +30,7 @@ class VideoController extends Controller
         $last_page = $this->paginate->lastPage('video');
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $video = DB::select("SELECT * FROM video OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $video = DB::select("SELECT * FROM video LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('media.video', ['files' => $video, 'paginate' => $paginate]);
     }
@@ -48,7 +48,7 @@ class VideoController extends Controller
 
 
         if ($error){
-            $video = DB::select("SELECT * FROM video OFFSET ? LIMIT ?", [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+            $video = DB::select("SELECT * FROM video LIMIT ? OFFSET ?", [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
             return new View('media.video', ['error' => $error, 'files' => $video, 'paginate' => $paginate]);
         }
 
@@ -57,8 +57,8 @@ class VideoController extends Controller
 
         $dateTime = new DateTime();
         $dateNow = $dateTime->format('Y-m-d H:i:s');
-        DB::insert("INSERT INTO video (url, name, created_at, updated_at) VALUES (?, ?, ?, ?)",
-            [$url, $name, $dateNow, $dateNow]);
+        DB::insert("INSERT INTO video (url, name, created_at, updated_at, size) VALUES (?, ?, ?, ?, ?)",
+            [$url, $name, $dateNow, $dateNow, $video['size']]);
 
         move_uploaded_file($video['tmp_name'], $url);
         MediaSizeService::plusVideoSize($video['size']);
@@ -72,7 +72,7 @@ class VideoController extends Controller
 
         $id = StrService::stringFilter($_POST['delete']);
 
-        $video = DB::select("SELECT * FROM audio WHERE id = ?", [$id])->fetch();
+        $video = DB::select("SELECT * FROM video WHERE id = ?", [$id])->fetch();
         DB::delete("DELETE FROM video WHERE id = ?", [$id]);
         if (file_exists($video['url'])){
             MediaSizeService::minusVideoSize($video['size']);

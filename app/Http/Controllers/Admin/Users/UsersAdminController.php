@@ -42,13 +42,13 @@ class UsersAdminController extends Controller
             $query = $AdminUsersFilter->filter($get);
         }else{
             $last_page = $this->paginate->lastPage('users');
-            $query = "SELECT * FROM users ORDER BY created_at DESC OFFSET ? LIMIT ?";
+            $query = "SELECT * FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?";
         }
 
         $offset = $this->paginate->offset(self::LIMIT_ITEM_PAGE);
         $paginate = $this->paginate->arrayPaginate(self::LIMIT_ITEM_PAGE, $last_page);
 
-        $result = DB::select($query, [$offset, self::LIMIT_ITEM_PAGE])->fetchAll();
+        $result = DB::select($query, [self::LIMIT_ITEM_PAGE, $offset])->fetchAll();
 
         return new View('admin.users.users', ['result' => $result, 'paginate' => $paginate,
             'find' => $get['find'] ?? null, 'selector' => self::SELECT_FILED, 'sorted' => $get['sorted']??null]);
@@ -97,7 +97,7 @@ class UsersAdminController extends Controller
         $id = StrService::stringFilter($_POST['id']);
 
         $user = DB::select("SELECT * FROM users WHERE id = ?", [$id])->fetch();
-        if ($user['banned'] === true){
+        if ($user['banned']){
             DB::update("UPDATE users SET banned = ? WHERE id = ?", [0, $id]);
         }else{
             DB::update("UPDATE users SET banned = ? WHERE id = ?", [true, $id]);

@@ -37,22 +37,22 @@ class PaginateService
 
     public function lastPage(string $table, string $field='id'):int
     {
-        return DB::select("SELECT COUNT($field) FROM $table")->fetch()['count'];
+        return DB::select("SELECT COUNT($field) FROM $table")->fetch()['COUNT(id)'];
     }
 
     public function lastPageForNews(string $table, string $field='id'):int
     {
-        return DB::select("SELECT COUNT($field) FROM $table WHERE publish = true")->fetch()['count'];
+        return DB::select("SELECT COUNT($field) FROM $table WHERE publish = true")->fetch()['COUNT(id)'];
     }
 
     public function lastPageForComments(string $table, $relations_id, string $field='id'):int
     {
-        return DB::select("SELECT COUNT($field) FROM $table WHERE news_id = ?", [$relations_id])->fetch()['count'];
+        return DB::select("SELECT COUNT($field) FROM $table WHERE news_id = ?", [$relations_id])->fetch()['COUNT(id)'];
     }
 
     public function lastPageForFindUsers(string $table, string $like, $field='id'):int
     {
-        return DB::select("SELECT COUNT($field) FROM $table WHERE email LIKE ?", ["%$like%"])->fetch()['count'];
+        return DB::select("SELECT COUNT($field) FROM $table WHERE email LIKE ?", ["%$like%"])->fetch()['COUNT(id)'];
     }
 
     public function arrayPaginate($limit, $last_page):array

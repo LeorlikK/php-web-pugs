@@ -74,6 +74,7 @@
     </div>
 </div>
 <script type="module" src="/resources/js/main.js"></script>
+<script type="module" src="/resources/js/media/video.js"></script>
 <script type="module" src="/resources/js/admin/cancel-save.js"></script>
 </body>
 </html>

@@ -90,7 +90,6 @@
         $(document).ready(function() {
             $('#summernote').summernote({
                 toolbar: [
-                    // [groupName, [list of button]]
                     ['style', ['bold', 'italic', 'underline', 'clear']],
                     ['font', ['strikethrough', 'superscript', 'subscript']],
                     ['fontsize', ['fontsize']],
@@ -107,9 +106,9 @@
         });
         $('.select2').select2()
     </script>
-<!--    <script type="module" src="/resources/js/main.js"></script>-->
-<!--    <script type="module" src="/resources/js/admin/save.js"></script>-->
-<!--    <script type="module" src="/resources/js/admin/news_create.js"></script>-->
+    <script type="module" src="/resources/js/main.js"></script>
+    <script type="module" src="/resources/js/admin/save.js"></script>
+    <script type="module" src="/resources/js/admin/news_create.js"></script>
     <script src="/resources/js/admin/change_image.js"></script>
 </body>
 </html>

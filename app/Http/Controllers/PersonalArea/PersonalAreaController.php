@@ -22,7 +22,7 @@ class PersonalAreaController extends Controller
 
     public function main():View
     {
-        $user = DB::select("SELECT * FROM users WHERE email = '{$_SESSION['authorize']}'")->fetch();
+        $user = DB::select("SELECT * FROM users WHERE email = ?", [Authorization::$auth->email])->fetch();
         return new View('personal_area.main', ['user' => $user]);
     }
 
@@ -34,11 +34,11 @@ class PersonalAreaController extends Controller
         $errors = LoginRequest::validated($request);
 
         if (!$errors){
-            DB::update("UPDATE users SET login = ? WHERE email = ?", [$request['login'], $_SESSION['authorize']]);
+            DB::update("UPDATE users SET login = ? WHERE email = ?", [$request['login'], Authorization::$auth->email]);
             header('Location: /office');
             exit();
         }else{
-            $user = DB::select("SELECT * FROM users WHERE email = '{$_SESSION['authorize']}'")->fetch();
+            $user = DB::select("SELECT * FROM users WHERE email = ?", [Authorization::$auth->email])->fetch();
             return new View('personal_area.main', ['errors' => $errors, 'user' => $user]);
         }
     }
@@ -49,18 +49,18 @@ class PersonalAreaController extends Controller
         $errors = UserPhotoRequest::validated($avatar);
 
         if ($errors){
-            $user = DB::select("SELECT * FROM users WHERE email = '{$_SESSION['authorize']}'")->fetch();
+            $user = DB::select("SELECT * FROM users WHERE email = ?", [Authorization::$auth->email])->fetch();
             return new View('personal_area.main', ['errors' => $errors, 'user' => $user]);
         }
 
-        $user = DB::select("SELECT * FROM users WHERE email = '{$_SESSION['authorize']}'")->fetch();
+        $user = DB::select("SELECT * FROM users WHERE email = ?", [Authorization::$auth->email])->fetch();
         if (file_exists($user['avatar'])){
             if ($user['avatar'] !== 'resources/images/avatar/avatar_default.png'){
                 unlink($user['avatar']);
             }
         }
         $url = MediaService::generateUniqueUrl($avatar, 'resources/images/avatar/', 'users', 'avatar');
-        DB::update("UPDATE users SET avatar = ? WHERE email = ?", [$url, $_SESSION['authorize']]);
+        DB::update("UPDATE users SET avatar = ? WHERE email = ?", [$url, Authorization::$auth->email]);
         move_uploaded_file($avatar['tmp_name'], $url);
         header('Location: /office');
         exit();
@@ -69,7 +69,7 @@ class PersonalAreaController extends Controller
     public function emailSend():View
     {
         $mail = new MailService();
-        $user = DB::select("SELECT email, login, avatar FROM users WHERE email = ?", [$_SESSION['authorize']])->fetch();
+        $user = DB::select("SELECT email, login, avatar FROM users WHERE email = ?", [Authorization::$auth->email])->fetch();
         $email = $user['email'];
         $login = $user['login'];
         $message = StrService::stringFilter($_POST['emailSend']);

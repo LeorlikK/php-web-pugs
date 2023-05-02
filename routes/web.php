@@ -19,7 +19,7 @@ use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\Nurseries\NurseriesController;
 use App\Http\Controllers\Peculiarities\PeculiaritiesController;
 use App\Http\Controllers\PersonalArea\PersonalAreaController;
-use Routes\Router;
+use routes\Router;
 
 // Main
 Router::get('/', MainController::class, 'main');
@@ -46,6 +46,7 @@ Router::get('/nurseries', NurseriesController::class, 'index');
 Router::get('/news', NewsController::class, 'index');
 Router::get('/news/show', NewsController::class, 'show');
 Router::get('/news/show/dop-comments', NewsController::class, 'dopComments');
+Router::post('/news/show/delete-comment', NewsController::class, 'deleteComment');
 
 // News Comments
 Router::post('/news/comments/create', CommentsController::class, 'create');
@@ -72,6 +73,7 @@ Router::post('/office/email/send', PersonalAreaController::class, 'emailSend');
 
 // Admin
 Router::get('/admin', AdminController::class, 'main');
+Router::get('/admin/update-size', AdminController::class, 'updateSize');
 
 Router::get('/admin/peculiarities', PeculiaritiesAdminController::class, 'main');
 Router::get('/admin/peculiarities/edit', PeculiaritiesAdminController::class, 'edit');
@@ -114,5 +116,5 @@ Router::get('/admin/nurseries/edit', NurseriesAdminController::class, 'edit');
 Router::post('/admin/nurseries/update', NurseriesAdminController::class, 'update');
 Router::post('/admin/nurseries/delete', NurseriesAdminController::class, 'delete');
 
-Router::get('/test', \App\Http\Controllers\Test::class, 'sayTest');
+//Router::get('/test', \App\Http\Controllers\Test::class, 'sayTest');
 Router::exec();

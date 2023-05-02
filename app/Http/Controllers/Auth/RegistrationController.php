@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\Error;
-use App\Exceptions\ErrorCod;
+use App\Exceptions\ErrorCode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegistrationRequest;
 use App\Http\Services\MailService;
@@ -58,7 +57,8 @@ class RegistrationController extends Controller
                 header('Location: /');
                 exit();
             }else{
-                throw new Error('Failed to register user', 500);
+              	new ErrorCode('unknown', 'Failed to register user', 'unknown');
+                exit();
             }
         }else{
             return new View('auth.registration', $errors);
@@ -80,7 +80,8 @@ class RegistrationController extends Controller
             header('Location: /login');
             exit();
         }else{
-            throw new Error('Failed to pass verification', 400);
+          	new ErrorCode('unknown', 'Failed to pass verification', 'unknown');
+            exit();
         }
     }
 }
