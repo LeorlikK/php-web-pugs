@@ -24,7 +24,7 @@ class AudioRequest extends Request
     protected function isSize($field)
     {
         if (empty($this->error[$field])) {
-            if (($this->request[$field] ?? null) > 104857600) $this->error[$field] = 'Файл не должен превышать 100 МБ';
+            if (($this->request[$field] ?? null) > 262144000) $this->error[$field] = 'Файл не должен превышать 250 МБ';
         }
     }
 
