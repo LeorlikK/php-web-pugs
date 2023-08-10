@@ -2,3 +2,4 @@
 *.js linguist-language=JavaScript
 *.css linguist-language=CSS
 /resources/js/summernote/* linguist-vendored
+/resources/js/jquery/* linguist-vendored
